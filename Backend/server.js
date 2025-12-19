@@ -1,8 +1,24 @@
-import app from './app.js'
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 
-dotenv.config({path:'backend/config/config.env'})
+dotenv.config({
+  path: './backend/config/config.env',
+});
 
-app.listen(process.env.PORT,()=>{
-    console.log(`server is running at ${process.env.PORT}`)
+import express from 'express';
+import { connectMongoDatabase } from './config/db.js';
+
+const app = express();
+
+app.use(express.json());
+
+connectMongoDatabase();
+
+
+app.get('/api/v1/products',(req,res)=>{
+    res.status(201).json({message:'welcome'});
 })
+
+const PORT = process.env.PORT || 8000;
+app.listen(PORT, () => {
+  console.log(`Server running on ${PORT}`);
+});
