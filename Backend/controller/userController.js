@@ -13,9 +13,12 @@ export const registerUser=handleAsyncError(async(req,res,next)=>{
                 url:"This is temp url"
             }
         })
+
+        const token=user.getJWTToken()
         return res.status(201).json({
             success:true,
-            user
+            user,
+            token
         })
 })
 
