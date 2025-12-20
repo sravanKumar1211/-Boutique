@@ -1,6 +1,7 @@
 import Product from "../models/productModel.js";
 import HandleError from "../utils/handleError.js";
 import handleAsyncError from "../middleware/handleAsyncError.js";
+import APIFunctionality from "../utils/apiFunctionality.js";
 
 // Create Product
 export const createProducts =handleAsyncError(async (req, res, next) => {
@@ -15,7 +16,8 @@ export const createProducts =handleAsyncError(async (req, res, next) => {
 // Get all products
 export const getAllProducts =handleAsyncError( async (req, res, next) => {
   try {
-    const products = await Product.find()
+   const apiFunctionality= new APIFunctionality(Product.find(),req.query).search();
+    const products = await apiFunctionality.query
     res.status(200).json({ success: true, products })
   } catch (error) {
     next(error)
