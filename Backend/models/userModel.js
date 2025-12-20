@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import validator from "validator";
+import bcryptjs from 'bcryptjs'
 
 
 const userSchema=new mongoose.Schema({
@@ -39,5 +40,14 @@ const userSchema=new mongoose.Schema({
     resetPasswordToken:String,
     resetPasswordExpire:Date
 },{timestamps:true})
+
+//Password Hash
+userSchema.pre("save",async function(next){
+     //if user want to change other data except password i prevents multy hashing
+    if(!this.isModified("password")){
+        return next();
+    }
+    this.password=await bcryptjs.hash(this.password,12)
+})
 
 export default mongoose.model("User",userSchema)
