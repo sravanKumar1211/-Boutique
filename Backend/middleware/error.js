@@ -7,6 +7,11 @@ const errorMiddleware = (err, req, res, next) => {
     const message = `Invalid resource: ${err.path}`;
     err = new HandleError(message, 400);
   }
+  //Duplicate Key Error
+  if(err.code==11000){
+    const message=`This ${Object.keys(err.keyValue)} already registered. Please Login to continue`;
+    err=new HandleError(message,400);
+  }
 
   err.statusCode = err.statusCode || 500;
   err.message = err.message || "Internal Server Error";
