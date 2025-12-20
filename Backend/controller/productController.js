@@ -16,7 +16,9 @@ export const createProducts =handleAsyncError(async (req, res, next) => {
 // Get all products
 export const getAllProducts =handleAsyncError( async (req, res, next) => {
   try {
-   const apiFunctionality= new APIFunctionality(Product.find(),req.query).search();
+    //seach by query if keyword contains any name that products returns else all
+    const resultsPerPage=9;
+   const apiFunctionality= new APIFunctionality(Product.find(),req.query).search().filter().pagination(resultsPerPage);
     const products = await apiFunctionality.query
     res.status(200).json({ success: true, products })
   } catch (error) {
