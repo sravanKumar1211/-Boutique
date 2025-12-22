@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-
+import crypto from 'crypto'
 
 const userSchema=new mongoose.Schema({
 
@@ -49,7 +49,9 @@ userSchema.pre("save",async function(next){
         return next();
     }
     this.password=await bcryptjs.hash(this.password,12)
+    next();
 })
+
 
 //It will generate JWT token
 userSchema.methods.getJWTToken=function(){
@@ -61,6 +63,14 @@ userSchema.methods.getJWTToken=function(){
 //compare Password
 userSchema.methods.verifyPassword=async function(userEnteredPassword){
         return await bcryptjs.compare(userEnteredPassword,this.password)
+}
+
+//generating token
+userSchema.methods.generatePasswordResetToken=function(){
+    const resetToken=crypto.randomBytes(20).toString('hex');
+    this.resetPasswordToken=crypto.createHash("sha256").update(resetToken).digest("hex");
+    this.resetPasswordExpire=Date.now()+5*60*1000 //5min
+    return resetToken;
 }
 
 

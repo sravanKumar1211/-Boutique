@@ -52,3 +52,20 @@ export const logout=handleAsyncError(async(req,res,next)=>{
     })
 })
 
+//ResetPassword
+
+export const requestPasswordReset=handleAsyncError(async(req,res,next)=>{ 
+    const {email}=req.body 
+    const user=await User.findOne({email});
+     if(!user){ 
+        return next(new HandleError("User does't exist",400)
+    )} 
+ try{
+     let resetToken=user.generatePasswordResetToken() 
+     console.log(resetToken)
+     await user.save({validateBeforeSave:false}) 
+     console.log('hello')
+    }catch(error){ 
+        console.log(error.message)
+        return next(new HandleError("could not save reset token,please try again later",500)) 
+    } })
