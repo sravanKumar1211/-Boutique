@@ -4,6 +4,7 @@ import HandleError from '../utils/handleError.js';
 import { sendToken } from '../utils/jwtToken.js';
 
 
+
 export const registerUser=handleAsyncError(async(req,res,next)=>{
         const{name,email,password}=req.body;
         const user=await User.create({
@@ -55,6 +56,7 @@ export const logout=handleAsyncError(async(req,res,next)=>{
 //ResetPassword
 
 export const requestPasswordReset=handleAsyncError(async(req,res,next)=>{ 
+     console.log("typeof next:", typeof next);
     const {email}=req.body 
     const user=await User.findOne({email});
      if(!user){ 
@@ -69,3 +71,6 @@ export const requestPasswordReset=handleAsyncError(async(req,res,next)=>{
         console.log(error.message)
         return next(new HandleError("could not save reset token,please try again later",500)) 
     } })
+
+
+

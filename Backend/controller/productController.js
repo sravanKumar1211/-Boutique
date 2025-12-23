@@ -96,3 +96,4 @@ export const getSingleProduct =handleAsyncError( async (req, res, next) => {
     next(error)
   }
 })
+

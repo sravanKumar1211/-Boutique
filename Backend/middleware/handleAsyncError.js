@@ -3,3 +3,5 @@ const handleAsyncError = (myErrorFun) => (req, res, next) => {
 };
 
 export default handleAsyncError;
+
+

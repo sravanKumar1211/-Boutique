@@ -20,3 +20,5 @@ router.route('/product/:id')
   .get(verifyUserAuth,getSingleProduct)
 
 export default router
+
+

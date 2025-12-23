@@ -43,15 +43,17 @@ const userSchema=new mongoose.Schema({
 },{timestamps:true})
 
 //Password Hash
-userSchema.pre("save",async function(next){
-     //if user want to change other data except password i prevents multy hashing
-    if(!this.isModified("password")){
-        return next();
-    }
-    this.password=await bcryptjs.hash(this.password,12)
-    next();
-})
+userSchema.pre("save", async function() {
+    if (!this.isModified("password")) return;
 
+    try {
+        this.password = await bcryptjs.hash(this.password, 12);
+    } catch (err) {
+        // You just throw it! 
+        // Mongoose catches this throw and sends it to your Controller's .catch() block
+        throw new Error("Encryption failed"); 
+    }
+});
 
 //It will generate JWT token
 userSchema.methods.getJWTToken=function(){
