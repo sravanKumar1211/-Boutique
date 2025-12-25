@@ -197,11 +197,9 @@ export const getSingleUser=handleAsyncError(async(req,res,next)=>{
 
 export const updateUserRole = handleAsyncError(async (req, res, next) => {
     const { role } = req.body;
-    
     const newUserData = {
         role
     };
-
     // Use req.params.id to target the specific user from the URL
     const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
         new: true,
@@ -211,9 +209,21 @@ export const updateUserRole = handleAsyncError(async (req, res, next) => {
     if (!user) {
         return next(new HandleError(`User does not exist with Id: ${req.params.id}`, 404));
     }
-
     res.status(200).json({
         success: true,
         user
     });
 });
+
+//Admin -Delete User Profile
+export const deleteUser=handleAsyncError(async(req,res,next)=>{
+     const user=await User.findById(req.params.id);
+     if(!user){
+        return next(new HandleError("User doesn't exist",400))
+     }
+     await User.findByIdAndDelete(req.params.id);
+     res.status(200).json({
+        success:true,
+        message:"User Delete Successfully"
+     })
+})

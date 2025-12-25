@@ -1,6 +1,6 @@
 import express from 'express'
 import {roleBasedAccess,verifyUserAuth } from '../middleware/userAuth.js'
-import { getSingleUser, getUserDetails, getUsersList, loginUser, logout, registerUser, requestPasswordReset, resetPassword, updatePassword, updateProfile, updateUserRole } from '../controller/userController.js'
+import { deleteUser, getSingleUser, getUserDetails, getUsersList, loginUser, logout, registerUser, requestPasswordReset, resetPassword, updatePassword, updateProfile, updateUserRole } from '../controller/userController.js'
 const router = express.Router()
 
 
@@ -15,6 +15,7 @@ router.route('/profile/update').post( verifyUserAuth,updateProfile);
 router.route('/admin/users').get( verifyUserAuth,roleBasedAccess("admin"),getUsersList);
 router.route('/admin/user/:id').get( verifyUserAuth,roleBasedAccess("admin"),getSingleUser);
 router.route('/admin/user/:id').put( verifyUserAuth,roleBasedAccess("admin"),updateUserRole);
+router.route('/admin/user/:id').delete( verifyUserAuth,roleBasedAccess("admin"),deleteUser);
 
 
 
