@@ -180,3 +180,15 @@ export const getUsersList=handleAsyncError(async(req,res,next)=>{
     users,
   });
 })
+//Admin getting single user details
+
+export const getSingleUser=handleAsyncError(async(req,res,next)=>{
+        const user=await User.findById(req.params.id);
+        if(!user){
+            return next(new HandleError(`User doesn't exist with this id:${req.params.id}`,400))
+        }
+        res.status(200).json({
+            success:true,
+            user
+        })
+})
