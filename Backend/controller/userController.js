@@ -192,3 +192,28 @@ export const getSingleUser=handleAsyncError(async(req,res,next)=>{
             user
         })
 })
+
+//Admin Changing user role
+
+export const updateUserRole = handleAsyncError(async (req, res, next) => {
+    const { role } = req.body;
+    
+    const newUserData = {
+        role
+    };
+
+    // Use req.params.id to target the specific user from the URL
+    const user = await User.findByIdAndUpdate(req.params.id, newUserData, {
+        new: true,
+        runValidators: true
+    });
+
+    if (!user) {
+        return next(new HandleError(`User does not exist with Id: ${req.params.id}`, 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        user
+    });
+});
