@@ -97,6 +97,53 @@ export const getSingleProduct =handleAsyncError( async (req, res, next) => {
   }
 })
 
+//Creating and Updating Review
+
+export const createUpdateReviewProduct = handleAsyncError(async (req, res, next) => {
+  const { rating, comment, productId } = req.body;
+
+  const review = {
+    user: req.user._id,
+    name: req.user.name,
+    rating: Number(rating),
+    comment
+  };
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    return next(new HandleError("Product not found", 404));
+  }
+  //  compare review.user the user posted previous review or not
+  const isReviewed = product.reviews.find(
+    (rev) => rev.user.toString() === req.user._id.toString()
+  );
+  if (isReviewed) {
+    //  user posted previous review Update older
+    product.reviews.forEach((rev) => {
+      if (rev.user.toString() === req.user._id.toString()) {
+        rev.rating = Number(rating);
+        rev.comment = comment;
+      }
+    });
+  } else {
+    product.reviews.push(review);
+  
+  }
+    product.numOfReviews=product.reviews.length
+        //Updating average ating
+  let sum=0
+  product.reviews.forEach(review=>{
+    sum+=review.rating
+  })
+  product.ratings=sum/product.reviews.length
+ await product.save({ validateBeforeSave: false });
+  res.status(200).json({
+    success: true,
+    message: isReviewed ? "Review updated" : "Review added"
+  });
+});
+
+
 //Admin getting All products 
 export const getAdminProducts=handleAsyncError(async(req,res,next)=>{
   const products=await Product.find();

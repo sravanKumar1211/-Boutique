@@ -1,6 +1,7 @@
 import express from 'express'
 import {
   createProducts,
+  createUpdateReviewProduct,
   deleteProduct,
   getAdminProducts,
   getAllProducts,
@@ -17,6 +18,7 @@ router.route('/admin/product/create').post(verifyUserAuth,roleBasedAccess("admin
 router.route('/admin/product/:id').put(verifyUserAuth,roleBasedAccess("admin"),updateProduct)
 router.route('/admin/product/:id').delete(verifyUserAuth,roleBasedAccess("admin"),deleteProduct)
 router.route('/product/:id').get(getSingleProduct)
+router.route('/review').put(verifyUserAuth,createUpdateReviewProduct)
 
 export default router
 
