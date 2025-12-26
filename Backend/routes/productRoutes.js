@@ -3,6 +3,7 @@ import {
   createProducts,
   createUpdateReviewProduct,
   deleteProduct,
+  deleteProductReview,
   getAdminProducts,
   getAllProducts,
   getProductReviews,
@@ -21,6 +22,7 @@ router.route('/admin/product/:id').delete(verifyUserAuth,roleBasedAccess("admin"
 router.route('/product/:id').get(getSingleProduct)
 router.route('/review').put(verifyUserAuth,createUpdateReviewProduct)
 router.route('/review').get(getProductReviews)
+router.route('/review').delete(deleteProductReview)
 
 export default router
 
