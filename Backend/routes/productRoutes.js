@@ -5,6 +5,7 @@ import {
   deleteProduct,
   getAdminProducts,
   getAllProducts,
+  getProductReviews,
   getSingleProduct,
   updateProduct
 } from '../controller/productController.js'
@@ -19,6 +20,7 @@ router.route('/admin/product/:id').put(verifyUserAuth,roleBasedAccess("admin"),u
 router.route('/admin/product/:id').delete(verifyUserAuth,roleBasedAccess("admin"),deleteProduct)
 router.route('/product/:id').get(getSingleProduct)
 router.route('/review').put(verifyUserAuth,createUpdateReviewProduct)
+router.route('/review').get(getProductReviews)
 
 export default router
 

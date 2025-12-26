@@ -113,12 +113,12 @@ export const createUpdateReviewProduct = handleAsyncError(async (req, res, next)
   if (!product) {
     return next(new HandleError("Product not found", 404));
   }
-  //  compare review.user the user posted previous review or not
+        //  compare review.user the user posted previous review or not
   const isReviewed = product.reviews.find(
     (rev) => rev.user.toString() === req.user._id.toString()
   );
   if (isReviewed) {
-    //  user posted previous review Update older
+        //  user posted previous review Update older
     product.reviews.forEach((rev) => {
       if (rev.user.toString() === req.user._id.toString()) {
         rev.rating = Number(rating);
@@ -135,7 +135,7 @@ export const createUpdateReviewProduct = handleAsyncError(async (req, res, next)
   product.reviews.forEach(review=>{
     sum+=review.rating
   })
-  product.ratings=sum/product.reviews.length
+  product.ratings=product.reviews.length>0?sum/product.reviews.length:0
  await product.save({ validateBeforeSave: false });
   res.status(200).json({
     success: true,
@@ -143,6 +143,18 @@ export const createUpdateReviewProduct = handleAsyncError(async (req, res, next)
   });
 });
 
+
+//Getting Reviews
+export const getProductReviews=handleAsyncError(async(req,res,next)=>{
+    const product=await Product.findById(req.query.id);
+    if(!product){
+      return next(new HandleError("Product not found",400))
+    }
+    res.status(200).json({
+      success:true,
+      reviews:product.reviews
+    })
+})
 
 //Admin getting All products 
 export const getAdminProducts=handleAsyncError(async(req,res,next)=>{
