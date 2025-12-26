@@ -39,13 +39,23 @@ export const getSingleOrder=handleAsyncError(async(req,res,next)=>{
     })
 })
 
-//All my orders 
+//All my orders of a particular user who is login
 export const allMyOrders=handleAsyncError(async(req,res,next)=>{
     const orders=await Order.find({user:req.user._id});
     if(!orders){
         return next(new HandleError("No order found",404));
 
     }
+    res.status(200).json({
+        success:true,
+        orders
+    })
+})
+
+//Get all places orders for admin
+
+export const getAllOrders=handleAsyncError(async(req,res,next)=>{
+    const orders=await Order.find();
     res.status(200).json({
         success:true,
         orders
