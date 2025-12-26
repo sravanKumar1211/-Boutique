@@ -56,8 +56,47 @@ export const allMyOrders=handleAsyncError(async(req,res,next)=>{
 
 export const getAllOrders=handleAsyncError(async(req,res,next)=>{
     const orders=await Order.find();
+    let totalAmount=0;
+    orders.forEach(order=>{
+        totalAmount+=order.totalPrice
+    })
     res.status(200).json({
         success:true,
-        orders
+        orders,
+        totalAmount
     })
 })
+
+//Update order Status
+
+export const updateOrderStatus = handleAsyncError(async (req, res, next) => {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+        return next(new HandleError("No order found", 404));
+    }
+    if (order.orderStatus === "Delivered") {
+        return next(new HandleError("This order has already been delivered", 400));
+    }
+    await Promise.all(
+        order.orderItems.map(item => updateQuantity(item.product, item.quantity))
+    );
+    // Update status from request body
+    order.orderStatus = req.body.status;
+    if (req.body.status === 'Delivered') {
+        order.deliveredAt = Date.now();
+    }
+    await order.save({ validateBeforeSave: false });
+    res.status(200).json({
+        success: true,
+        order
+    });
+}); 
+
+async function updateQuantity(id,quantity){
+    const product =await Product.findById(id);
+    if(!product){
+        return next(new HandleError("Product not found",404));
+    }
+    product.stock-=quantity
+    await product.save({validateBeforeSave:false})
+}
