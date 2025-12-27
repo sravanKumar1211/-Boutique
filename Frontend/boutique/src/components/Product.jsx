@@ -48,7 +48,7 @@ function Product({ product }) {
             </p>
 
             <button className="bg-[#6D1A36] hover:bg-[#D4AF37] hover:text-black transition px-4 py-1 rounded">
-              Add To Cart
+              View Details
             </button>
           </div>
 

@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
 import ImageSlider from '../components/ImageSlider'
 import Product from '../components/Product'
+import PageTitle from '../components/PageTitle'
 
 
 const products= [
@@ -71,6 +72,7 @@ const products= [
 function Home() {
   return (
     <div>
+      <PageTitle title="Home"></PageTitle>
       <Navbar></Navbar>
       <ImageSlider></ImageSlider>
       <h1>Home</h1>
