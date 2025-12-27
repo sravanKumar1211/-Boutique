@@ -10,7 +10,7 @@ function Product({ product }) {
   }
 
   return (
-    <Link to={product._id}>
+    <Link to={`/product/${product._id}`}>
       <div className="bg-black border border-[#6D1A36] rounded-lg p-4 flex gap-4 hover:shadow-lg hover:shadow-[#6D1A36]/40 transition">
 
         {/* Image */}

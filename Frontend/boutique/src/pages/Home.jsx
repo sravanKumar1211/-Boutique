@@ -6,10 +6,11 @@ import Product from '../components/Product'
 import PageTitle from '../components/PageTitle'
 import { useDispatch, useSelector } from 'react-redux'
 import { getProduct } from '../features/products/productSlice'
-
+import Loader from '../components/Loader'
+import { removeErrors } from "../features/products/productSlice.js";
+import {toast} from "react-toastify"
 
 function Home() {
-
   const {loading,error,products,productCount}= useSelector((state)=>state.product);
   const dispatch=useDispatch();
 
@@ -17,8 +18,16 @@ function Home() {
     dispatch(getProduct())
   },[dispatch])
 
+  useEffect(() => {
+    if(error){
+      toast.error(error.message,{position:'top-center',autoClose:5000});
+      dispatch(removeErrors())
+    }
+  }, [dispatch,error])
+
   return (
-    <div>
+    <>
+    {loading?(<Loader></Loader>):<div>
       <PageTitle title="Home"></PageTitle>
       <Navbar></Navbar>
       <ImageSlider></ImageSlider>
@@ -31,7 +40,8 @@ function Home() {
       </div>
 
       <Footer></Footer>
-    </div>
+    </div>}
+    </>
   )
 }
 
