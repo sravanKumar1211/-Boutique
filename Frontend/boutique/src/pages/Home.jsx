@@ -74,13 +74,13 @@ function Home() {
       <Navbar></Navbar>
       <ImageSlider></ImageSlider>
       <h1>Home</h1>
-      <div>
-        {
-          products.map((product,index)=>(
-            <Product product={product} key={index}/>
-          ))
-        }
+    
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-6 py-10">
+        {products.map((product) => (
+          <Product product={product} key={product._id} />
+        ))}
       </div>
+
       <Footer></Footer>
     </div>
   )
