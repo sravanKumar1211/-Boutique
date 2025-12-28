@@ -47,7 +47,7 @@ function Navbar() {
           {[
             { to: '/', icon: <Home fontSize="small" />, label: 'Home' },
             { to: '/about', icon: <Info fontSize="small" />, label: 'About' },
-            { to: '/shop', icon: <Store fontSize="small" />, label: 'Shop' },
+            { to: '/products', icon: <Store fontSize="small" />, label: 'Shop' },
             { to: '/contact', icon: <ContactMail fontSize="small" />, label: 'Contact' },
           ].map((item) => (
             <li key={item.label}>
