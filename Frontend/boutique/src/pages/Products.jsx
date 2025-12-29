@@ -18,12 +18,19 @@ function Products() {
 
     const searchParams = new URLSearchParams(location.search);
     const keyword = searchParams.get("keyword");
+    const category = searchParams.get("category"); 
     const pageFromURL = parseInt(searchParams.get("page"), 10) || 1;
+    
     const [currentPage, setCurrentPage] = useState(pageFromURL);
 
+    // Sync state with URL when back/forward or category clicks happen
     useEffect(() => {
-        dispatch(getProduct({ keyword, page: currentPage }))
-    }, [dispatch, keyword, currentPage])
+        setCurrentPage(pageFromURL);
+    }, [pageFromURL]);
+
+    useEffect(() => {
+        dispatch(getProduct({ keyword, page: currentPage, category }))
+    }, [dispatch, keyword, currentPage, category])
 
     useEffect(() => {
         if (error) {
@@ -34,75 +41,84 @@ function Products() {
 
     const handlePageChange = (page) => {
         if (page !== currentPage) {
-            setCurrentPage(page);
             const newSearchParams = new URLSearchParams(location.search);
-            if (page === 1) {
-                newSearchParams.delete('page')
-            } else {
-                newSearchParams.set('page', page)
-            }
+            page === 1 ? newSearchParams.delete('page') : newSearchParams.set('page', page);
             navigate(`?${newSearchParams.toString()}`)
         }
     }
 
-    const categories = ["Sarees", "Bridal", "Accessories", "Casual", "Embroidery"];
+    const categoryMap = {
+        "Sarees": "saree",
+        "Bridal": "bridal",
+        "Accessories": "accessories",
+        "Casual": "casual",
+        "Embroidery": "embroidery",
+        "Shirts": "shirts"
+    };
+
+    const handleCategoryClick = (displayCat) => {
+        const dbCat = categoryMap[displayCat];
+        const newSearchParams = new URLSearchParams(location.search);
+        
+        if (category === dbCat) {
+            newSearchParams.delete('category');
+        } else {
+            newSearchParams.set('category', dbCat);
+        }
+        
+        // Always reset to page 1 when category changes
+        newSearchParams.delete('page');
+        navigate(`?${newSearchParams.toString()}`);
+    }
 
     return (
         <div className="bg-black min-h-screen flex flex-col">
             <PageTitle title='All Products' />
             <Navbar />
-
-            {loading ? (
-                <Loader />
-            ) : (
+            {loading ? <Loader /> : (
                 <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 flex-grow">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                        
-                        {/* Left Section */}
                         <aside className="md:col-span-1">
                             <div className="sticky top-24">
-                                <h3 className="text-[#D4AF37] font-bold text-lg mb-4 tracking-widest border-b border-[#6D1A36] pb-2">
-                                    CATEGORIES
-                                </h3>
+                                <h3 className="text-[#D4AF37] font-bold text-lg mb-4 tracking-widest border-b border-[#6D1A36] pb-2">CATEGORIES</h3>
                                 <ul className="space-y-3">
-                                    {categories.map((cat) => (
+                                    {Object.keys(categoryMap).map((displayCat) => (
                                         <li 
-                                            key={cat} 
-                                            className="text-gray-400 hover:text-[#D4AF37] cursor-pointer transition-colors duration-200 text-sm uppercase tracking-wider"
+                                            key={displayCat} 
+                                            onClick={() => handleCategoryClick(displayCat)}
+                                            className={`text-sm uppercase tracking-wider cursor-pointer transition-colors duration-200 ${
+                                                category === categoryMap[displayCat] ? "text-[#D4AF37] font-bold" : "text-gray-400 hover:text-[#D4AF37]"
+                                            }`}
                                         >
-                                            {cat}
+                                            {displayCat}
                                         </li>
                                     ))}
+                                    {category && (
+                                        <li onClick={() => navigate('/products')} className="text-xs text-red-500 mt-4 cursor-pointer hover:underline uppercase">
+                                            Clear Filters
+                                        </li>
+                                    )}
                                 </ul>
                             </div>
                         </aside>
 
-                        {/* Right Section */}
                         <section className="md:col-span-3">
-                            <h2 className="text-white text-2xl font-semibold mb-6">Our Collection</h2>
-                            
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-white text-2xl font-semibold italic">Our Collection</h2>
+                                {category && <span className="text-[#D4AF37] text-xs font-bold uppercase">Category: {category}</span>}
+                            </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {products?.length > 0 ? (
-                                    products.map((product) => (
-                                        <Product key={product?._id} product={product} />
-                                    ))
+                                    products.map((product) => <Product key={product?._id} product={product} />)
                                 ) : (
-                                    <p className="text-gray-500 col-span-full text-center py-20">
-                                        No products found.
-                                    </p>
+                                    <div className="col-span-full py-20 text-center text-gray-500">No products found.</div>
                                 )}
                             </div>
-
-                            {/* Pagination placed inside Right Section, below the grid */}
-                            <Pagination
-                                currentPage={currentPage}
-                                onPageChange={handlePageChange}
-                            />
+                            <Pagination currentPage={currentPage} onPageChange={handlePageChange} />
                         </section>
                     </div>
                 </main>
             )}
-
             <Footer />
         </div>
     )
