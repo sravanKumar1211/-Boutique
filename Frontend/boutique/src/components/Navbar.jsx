@@ -11,12 +11,24 @@ import {
   ContactMail,
   PersonAdd,
 } from '@mui/icons-material'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [searchQuery,setSearchQuery]=useState('');
   const isAuthenticated = false
+  const navigate=useNavigate();
+
+  const handleSearch=(e)=>{
+    e.preventDefault();
+    if(searchQuery.trim()){
+      navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`)
+    }else{
+      navigate(`/products`)
+    }
+    setSearchQuery('')
+  }
 
   return (
     <nav className="bg-black text-white sticky top-0 z-50 border-b border-[#6D1A36]">
@@ -31,11 +43,13 @@ function Navbar() {
         </Link>
 
         {/* Search – Desktop */}
-        <form className="hidden md:flex items-center border border-[#D4AF37] rounded overflow-hidden">
+        <form className="hidden md:flex items-center border border-[#D4AF37] rounded overflow-hidden"
+        onSubmit={handleSearch}>
           <input
             type="text"
             placeholder="Search products"
             className="px-3 py-2 bg-black text-white placeholder-gray-400 outline-none"
+            value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
           />
           <button className="bg-[#D4AF37] px-3 py-2 text-black hover:bg-[#6D1A36] hover:text-white transition">
             <Search />
@@ -124,8 +138,10 @@ function Navbar() {
                 type="text"
                 placeholder="Search"
                 className="flex-1 px-3 py-2 bg-black text-white outline-none"
+                value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
               />
-              <button className="bg-[#D4AF37] px-3 py-2 text-black">
+              <button className="bg-[#D4AF37] px-3 py-2 text-black"
+              onClick={handleSearch}>
                 <Search />
               </button>
             </form>
