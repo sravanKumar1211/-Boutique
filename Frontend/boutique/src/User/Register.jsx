@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
-
+import {useDispatch, useSelector} from 'react-redux'
+import { register, removeErrors, removeSuccess } from '../features/user/userSlice'
 
 function Register() {
   const [user,setUser]=useState({
@@ -12,7 +13,10 @@ function Register() {
   const {name,email,password}=user;
   const [avatar,setAvatar]=useState('')
   const [avatarPreview,setAvatarPreview]=useState('./image')
-  
+  const {success,loading,error} = useSelector(state => state.user)
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
+
   const registerDataChange=(e)=>{
     if(e.target.name=='avatar'){
         const reader=new FileReader();
@@ -43,7 +47,23 @@ function Register() {
     for(let pair of myForm.entries()){
         console.log(pair)
     }
+    dispatch(register(myForm))
   }
+
+   useEffect(() => {
+      if(error){
+        toast.error(error,{position:'top-center',autoClose:5000});
+        dispatch(removeErrors())
+      }
+    }, [dispatch,error])
+
+     useEffect(() => {
+      if(success){
+        toast.success("Registration successfull",{position:'top-center',autoClose:5000});
+        dispatch(removeSuccess())
+        navigate('/login')
+      }
+    }, [dispatch,success])
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
@@ -59,7 +79,7 @@ function Register() {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={registerSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={registerSubmit} encType='multipart/form-data'>
           <div className="space-y-4">
             {/* Name Input */}
             <div>
