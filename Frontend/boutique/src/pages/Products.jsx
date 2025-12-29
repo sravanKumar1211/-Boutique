@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import PageTitle from '../components/PageTitle'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
@@ -8,18 +7,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProduct, removeErrors } from '../features/products/productSlice'
 import { toast } from 'react-toastify'
 import Loader from '../components/Loader'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import Pagination from '../components/Pagination'
 
 function Products() {
-    const { loading, error, products } = useSelector(state => state.product);
+    const { loading, error, products } = useSelector(state => state.product || {});
     const dispatch = useDispatch();
-    const location=useLocation();
-    const searchParams= new URLSearchParams(location.search)
-    const keyword=searchParams.get("keyword")
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const searchParams = new URLSearchParams(location.search);
+    const keyword = searchParams.get("keyword");
+    const pageFromURL = parseInt(searchParams.get("page"), 10) || 1;
+    const [currentPage, setCurrentPage] = useState(pageFromURL);
 
     useEffect(() => {
-        dispatch(getProduct({keyword}))
-    }, [dispatch,keyword])
+        dispatch(getProduct({ keyword, page: currentPage }))
+    }, [dispatch, keyword, currentPage])
 
     useEffect(() => {
         if (error) {
@@ -28,8 +32,21 @@ function Products() {
         }
     }, [dispatch, error])
 
+    const handlePageChange = (page) => {
+        if (page !== currentPage) {
+            setCurrentPage(page);
+            const newSearchParams = new URLSearchParams(location.search);
+            if (page === 1) {
+                newSearchParams.delete('page')
+            } else {
+                newSearchParams.set('page', page)
+            }
+            navigate(`?${newSearchParams.toString()}`)
+        }
+    }
+
     const categories = ["Sarees", "Bridal", "Accessories", "Casual", "Embroidery"];
-       // console.log("products:" ,products)
+
     return (
         <div className="bg-black min-h-screen flex flex-col">
             <PageTitle title='All Products' />
@@ -65,17 +82,22 @@ function Products() {
                             <h2 className="text-white text-2xl font-semibold mb-6">Our Collection</h2>
                             
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {/* FIX: Added ?. before .length to be 100% safe */}
                                 {products?.length > 0 ? (
                                     products.map((product) => (
                                         <Product key={product?._id} product={product} />
                                     ))
-                                ) : !loading ? (
+                                ) : (
                                     <p className="text-gray-500 col-span-full text-center py-20">
                                         No products found.
                                     </p>
-                                ) : null}
+                                )}
                             </div>
+
+                            {/* Pagination placed inside Right Section, below the grid */}
+                            <Pagination
+                                currentPage={currentPage}
+                                onPageChange={handlePageChange}
+                            />
                         </section>
                     </div>
                 </main>
