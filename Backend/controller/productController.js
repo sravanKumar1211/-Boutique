@@ -18,7 +18,7 @@ export const createProducts =handleAsyncError(async (req, res, next) => {
 export const getAllProducts =handleAsyncError( async (req, res, next) => {
   try {
     //seach by query if keyword contains any name that products returns else all
-    const resultsPerPage=9;
+    const resultsPerPage=2;
    const apiFeatures= new APIFunctionality(Product.find(),req.query).search().filter();
    //getting filtered query before pagination
    const filteredQuery=apiFeatures.query.clone();
