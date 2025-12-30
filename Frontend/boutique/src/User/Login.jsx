@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { login, removeErrors, removeSuccess } from '../features/user/userSlice';
 import { toast } from 'react-toastify';
 import { useSelector,useDispatch } from 'react-redux';
@@ -10,7 +10,8 @@ function Login() {
   const {error,loading,success,isAuthenticated} = useSelector(state => state.user);
   const dispatch = useDispatch()
   const navigate=useNavigate()
-
+  const redirect=new URLSearchParams(location.search).get('redirect') ||'/'
+  const location=useLocation()
   const loginSubmit = (e) => {
     e.preventDefault()
     //console.log("Login Attempt:", { loginEmail, loginPassword })
@@ -26,7 +27,7 @@ function Login() {
 
       useEffect(()=>{
         if(isAuthenticated){
-            navigate('/')
+            navigate(redirect)
         }
       },[isAuthenticated])
   

@@ -15,6 +15,7 @@ import UpdatePassword from './User/UpdatePassword.jsx'
 import ForgotPassword from './User/ForgotPassword.jsx'
 import ResetPassword from './User/ResetPassword.jsx'
 import Cart from './Cart/Cart.jsx'
+import Shipping from './Cart/Shipping.jsx'
 
 function App() {
   const{isAuthenticated,user}=useSelector(state=>state.user)
@@ -41,6 +42,7 @@ function App() {
         <Route path='/password/forgot' element={<ForgotPassword></ForgotPassword>}></Route>
         <Route path='password/reset/:token' element={<ResetPassword></ResetPassword>}></Route>
         <Route path='/cart' element={<Cart></Cart>}></Route>
+        {isAuthenticated && <Route path='/shipping' element={<Shipping></Shipping>}></Route>}
       </Routes>
        
       {/* {isAuthenticated && <UserDashboard user={user}></UserDashboard>} */}

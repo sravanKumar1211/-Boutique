@@ -4,11 +4,15 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import CartItem from './CartItem';
 import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Cart() {
     // Note: ensure 'cart' matches the key in your store.js
     const { cartItems } = useSelector(state => state.cart);
+    const navigate=useNavigate()
+    const checkoutHandler=()=>{
+        navigate(`/login?redirect=/shipping`)
+    }
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
     const tax = subtotal * 0.18;
@@ -62,7 +66,8 @@ function Cart() {
                                     <span>₹{total.toFixed(2)}</span>
                                 </div>
                             </div>
-                            <button className="w-full mt-8 bg-[#6D1A36] text-white font-bold py-3 rounded hover:bg-[#D4AF37] hover:text-black transition uppercase tracking-widest">
+                            <button className="w-full mt-8 bg-[#6D1A36] text-white font-bold py-3 rounded hover:bg-[#D4AF37] hover:text-black transition uppercase tracking-widest"
+                             onClick={checkoutHandler}>
                                 Proceed to Checkout
                             </button>
                         </div>

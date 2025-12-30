@@ -17,6 +17,7 @@ import UserDashboard from '../User/UserDashboard'; // Ensure path is correct
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const {cartItems}=useSelector(state=>state.cart)
   
   const navigate = useNavigate();
   const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -31,7 +32,6 @@ function Navbar() {
     setSearchQuery('');
     setIsMenuOpen(false);
   };
-
   return (
     <nav className="bg-black text-white sticky top-0 z-50 border-b border-[#6D1A36] shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -81,7 +81,7 @@ function Navbar() {
           <Link to="/cart" className="relative group">
             <ShoppingCart className="group-hover:text-[#D4AF37] transition-colors" />
             <span className="absolute -top-2 -right-2 bg-[#6D1A36] text-[10px] w-4 h-4 flex items-center justify-center rounded-full border border-[#D4AF37] font-bold">
-              0
+              {cartItems.length}
             </span>
           </Link>
 
