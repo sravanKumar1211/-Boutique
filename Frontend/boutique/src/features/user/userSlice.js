@@ -1,6 +1,7 @@
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+
 // ... (register, login, loadUser, logout, updateProfile thunks remain exactly the same)
 export const register=createAsyncThunk('user/register',async(userData,{rejectWithValue})=>{
     try{
@@ -47,6 +48,16 @@ export const updateProfile=createAsyncThunk('user/updateProfile',async(userData,
         return data
     }catch(error){
         return rejectWithValue(error.response?.data || {message:'Profile Update failed'})
+    }
+})
+
+export const updatePassword=createAsyncThunk('user/updatePassword',async(formData,{rejectWithValue})=>{
+    try{    
+         const config={ headers:{ 'Content-Type':'application/json' } }
+        const {data}=await axios.put('/api/v1/password/update',formData,config);
+        return data
+    }catch(error){
+        return rejectWithValue(error.response?.data || 'Password Update failed')
     }
 })
 
@@ -122,7 +133,7 @@ const userSlice=createSlice({
             state.user=null;
             state.isAuthenticated=false;
         })
-
+        //UpdateUser Profile
          builder.addCase(updateProfile.pending,(state)=>{
             state.loading=true;
             state.error=null;
@@ -135,8 +146,22 @@ const userSlice=createSlice({
             state.message=action.payload?.message;
         })
         .addCase(updateProfile.rejected,(state,action)=>{
-            state.loading=false; // Re-enables button on error
+            state.loading=false; 
             state.error=action.payload?.message || 'UpdateProfile failed.';
+        })
+        //Update User Pssword
+        builder.addCase(updatePassword.pending,(state)=>{
+            state.loading=true;
+            state.error=null;
+        })
+        .addCase(updatePassword.fulfilled,(state,action)=>{
+            state.loading=false; 
+            state.error=null;
+            state.success=action.payload?.success;
+        })
+        .addCase(updatePassword.rejected,(state,action)=>{
+            state.loading=false; 
+            state.error=action.payload?.message || 'UpdatePassword failed.';
         })
     }
 })
