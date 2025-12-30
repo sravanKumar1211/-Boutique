@@ -13,7 +13,7 @@ function Login() {
 
   const loginSubmit = (e) => {
     e.preventDefault()
-    console.log("Login Attempt:", { loginEmail, loginPassword })
+    //console.log("Login Attempt:", { loginEmail, loginPassword })
     dispatch(login({email:loginEmail,password:loginPassword}))
   }
 

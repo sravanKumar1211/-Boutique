@@ -8,6 +8,9 @@ import Login from './User/Login.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadUser } from './features/user/userSlice.js'
 import UserDashboard from './User/UserDashboard.jsx'
+import Profile from './User/Profile.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
+import UpdateProfile from './User/UpdateProfile.jsx'
 
 function App() {
   const{isAuthenticated,user}=useSelector(state=>state.user)
@@ -17,8 +20,8 @@ function App() {
       dispatch(loadUser())
     }
   },[dispatch])
-  console.log(user)
-  console.log(isAuthenticated)
+ // console.log(user)
+  //console.log(isAuthenticated)
   return (
     <Router>
       <Routes>
@@ -28,7 +31,10 @@ function App() {
         <Route path='/products/:keyword' element={<Products></Products>}></Route>
         <Route path='/register' element={<Register></Register>}></Route>
         <Route path='/login' element={<Login></Login>}></Route>
+        <Route path='/profile' element={<Profile></Profile>}></Route>
+        <Route path='/profile/update' element={<UpdateProfile></UpdateProfile>}></Route>
       </Routes>
+       
       {/* {isAuthenticated && <UserDashboard user={user}></UserDashboard>} */}
     </Router>
   )
