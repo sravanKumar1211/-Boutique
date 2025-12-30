@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, MenuItem, Avatar, IconButton, Tooltip } from '@mui/material';
 import { useDispatch } from 'react-redux';
-// import { logout } from '../features/user/userSlice'; // Assuming you'll have a logout action
+ import { logout, removeSuccess } from '../features/user/userSlice'; // Assuming you'll have a logout action
+import { toast } from 'react-toastify';
 
 function UserDashboard({ user }) {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -16,8 +17,14 @@ function UserDashboard({ user }) {
   const logoutUser = () => {
     handleClose();
     console.log("Logout triggered");
-    // dispatch(logout()); 
-    // navigate("/login");
+    dispatch(logout())
+    .unwrap().then(()=>{
+    toast.success('logout success')
+    dispatch(removeSuccess())
+     navigate("/login")
+    }).catch((error)=>{
+        toast.success(error.message)
+    })
   };
 
   const options = [
