@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
 import PageTitle from '../components/PageTitle'
+import Navbar from '../components/Navbar';
 import Loader from '../components/Loader'
 function Profile() {
     const { loading, isAuthenticated, user } = useSelector(state => state.user)
@@ -13,6 +14,7 @@ function Profile() {
     },[isAuthenticated])
     return (
         <>
+        <Navbar />
         <div className="min-h-screen bg-black text-white flex flex-col md:flex-row items-center justify-center px-6 py-12 gap-10 md:gap-20">
             {/* Left Section - Avatar and Edit */}
             <PageTitle title={`${user.name} Profile`}></PageTitle>
