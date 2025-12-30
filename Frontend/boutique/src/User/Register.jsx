@@ -154,7 +154,7 @@ function Register() {
               type="submit"
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-md text-black bg-[#D4AF37] hover:bg-[#b8962d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D4AF37] transition duration-300 uppercase tracking-widest"
             >
-              Sign Up
+             {loading?'SigningUp...!':' Sign Up'}
             </button>
           </div>
 

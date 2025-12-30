@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 import Home from './pages/Home'
 import ProductDetails from './pages/ProductDetails'
 import Products from './pages/Products.jsx'
 import Register from './User/Register.jsx'
 import Login from './User/Login.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { loadUser } from './features/user/userSlice.js'
+import UserDashboard from './User/UserDashboard.jsx'
 
 function App() {
+  const{isAuthenticated,user}=useSelector(state=>state.user)
+  const dispatch=useDispatch()
+  useEffect(()=>{
+    if(isAuthenticated){
+      dispatch(loadUser())
+    }
+  },[dispatch])
+  console.log(user)
+  console.log(isAuthenticated)
   return (
     <Router>
       <Routes>
@@ -17,6 +29,7 @@ function App() {
         <Route path='/register' element={<Register></Register>}></Route>
         <Route path='/login' element={<Login></Login>}></Route>
       </Routes>
+      {/* {isAuthenticated && <UserDashboard user={user}></UserDashboard>} */}
     </Router>
   )
 }

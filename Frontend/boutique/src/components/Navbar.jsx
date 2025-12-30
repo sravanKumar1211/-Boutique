@@ -1,5 +1,6 @@
-
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Search,
   ShoppingCart,
@@ -10,91 +11,93 @@ import {
   Store,
   ContactMail,
   PersonAdd,
-} from '@mui/icons-material'
-import { Link, useNavigate } from 'react-router-dom'
-
+} from '@mui/icons-material';
+import UserDashboard from '../User/UserDashboard'; // Ensure path is correct
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery,setSearchQuery]=useState('');
-  const isAuthenticated = false
-  const navigate=useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.user);
 
-  const handleSearch=(e)=>{
+  const handleSearch = (e) => {
     e.preventDefault();
-    if(searchQuery.trim()){
-      navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`)
-    }else{
-      navigate(`/products`)
+    if (searchQuery.trim()) {
+      navigate(`/products?keyword=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      navigate(`/products`);
     }
-    setSearchQuery('')
-  }
+    setSearchQuery('');
+    setIsMenuOpen(false);
+  };
 
   return (
-    <nav className="bg-black text-white sticky top-0 z-50 border-b border-[#6D1A36]">
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-
-        {/* Logo */}
-        <Link
-          to="/"
-          className="text-2xl font-bold tracking-widest text-[#D4AF37]"
-        >
+    <nav className="bg-black text-white sticky top-0 z-50 border-b border-[#6D1A36] shadow-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        
+        {/* 1. Logo */}
+        <Link to="/" className="text-2xl font-bold tracking-[0.2em] text-[#D4AF37] hover:opacity-80 transition">
           BRAND
         </Link>
 
-        {/* Search – Desktop */}
-        <form className="hidden md:flex items-center border border-[#D4AF37] rounded overflow-hidden"
-        onSubmit={handleSearch}>
-          <input
-            type="text"
-            placeholder="Search products"
-            className="px-3 py-2 bg-black text-white placeholder-gray-400 outline-none"
-            value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
-          />
-          <button className="bg-[#D4AF37] px-3 py-2 text-black hover:bg-[#6D1A36] hover:text-white transition">
-            <Search />
-          </button>
-        </form>
-
-        {/* Desktop Links */}
-        <ul className="hidden md:flex items-center gap-6 text-sm font-medium">
+        {/* 2. Desktop Navigation Links */}
+        <ul className="hidden md:flex items-center gap-8 text-xs uppercase tracking-widest font-semibold">
           {[
-            { to: '/', icon: <Home fontSize="small" />, label: 'Home' },
-            { to: '/about', icon: <Info fontSize="small" />, label: 'About' },
-            { to: '/products', icon: <Store fontSize="small" />, label: 'Shop' },
-            { to: '/contact', icon: <ContactMail fontSize="small" />, label: 'Contact' },
+            { to: '/', label: 'Home' },
+            { to: '/products', label: 'Shop' },
+            { to: '/about', label: 'About' },
+            { to: '/contact', label: 'Contact' },
           ].map((item) => (
             <li key={item.label}>
-              <Link
-                to={item.to}
-                className="flex items-center gap-1 hover:text-[#D4AF37] transition"
-              >
-                {item.icon}
+              <Link to={item.to} className="hover:text-[#D4AF37] transition-colors duration-300">
                 {item.label}
               </Link>
             </li>
           ))}
         </ul>
 
-        {/* Right Section */}
-        <div className="flex items-center gap-4">
+        {/* 3. Action Icons & Search */}
+        <div className="flex items-center gap-5">
+          
+          {/* Desktop Search Bar */}
+          <form 
+            onSubmit={handleSearch}
+            className="hidden lg:flex items-center bg-[#111] border border-gray-800 rounded-full px-3 py-1 focus-within:border-[#D4AF37] transition-all"
+          >
+            <input
+              type="text"
+              placeholder="Search..."
+              className="bg-transparent text-sm focus:outline-none w-32 focus:w-48 transition-all duration-300 px-2"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button type="submit" className="text-[#D4AF37]">
+              <Search fontSize="small" />
+            </button>
+          </form>
 
-          {/* Cart */}
-          <Link to="/cart" className="relative">
-            <ShoppingCart className="hover:text-[#D4AF37]" />
-            <span className="absolute -top-2 -right-2 bg-[#6D1A36] text-xs w-5 h-5 flex items-center justify-center rounded-full border border-[#D4AF37]">
+          {/* Cart Icon */}
+          <Link to="/cart" className="relative group">
+            <ShoppingCart className="group-hover:text-[#D4AF37] transition-colors" />
+            <span className="absolute -top-2 -right-2 bg-[#6D1A36] text-[10px] w-4 h-4 flex items-center justify-center rounded-full border border-[#D4AF37] font-bold">
               0
             </span>
           </Link>
 
-          {/* Profile */}
-          {!isAuthenticated && (
-            <Link to="/register" className="hover:text-[#D4AF37]">
-              <PersonAdd />
-            </Link>
-          )}
+          {/* User Profile Logic */}
+          <div className="flex items-center border-l border-gray-800 pl-4 ml-2">
+            {isAuthenticated ? (
+              <UserDashboard user={user} />
+            ) : (
+              <Link to="/login" className="flex items-center gap-2 hover:text-[#D4AF37] transition">
+                <PersonAdd fontSize="medium" />
+                <span className="hidden sm:inline text-[10px] uppercase tracking-tighter">Login</span>
+              </Link>
+            )}
+          </div>
 
-          {/* Hamburger */}
+          {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-[#D4AF37]"
@@ -104,54 +107,29 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* 4. Mobile Menu Drawer */}
       {isMenuOpen && (
-        <div className="md:hidden bg-black border-t border-[#6D1A36]">
-          <ul
-            className="flex flex-col gap-4 p-4 text-sm"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            <li>
-              <Link to="/" className="flex items-center gap-2 hover:text-[#D4AF37]">
-                <Home /> Home
-              </Link>
-            </li>
-            <li>
-              <Link to="/about" className="flex items-center gap-2 hover:text-[#D4AF37]">
-                <Info /> About
-              </Link>
-            </li>
-            <li>
-              <Link to="/shop" className="flex items-center gap-2 hover:text-[#D4AF37]">
-                <Store /> Shop
-              </Link>
-            </li>
-            <li>
-              <Link to="/contact" className="flex items-center gap-2 hover:text-[#D4AF37]">
-                <ContactMail /> Contact
-              </Link>
-            </li>
-
-            {/* Mobile Search */}
-            <form className="flex mt-2 border border-[#D4AF37] rounded overflow-hidden">
+        <div className="md:hidden bg-[#0a0a0a] border-t border-[#6D1A36] animate-fadeIn">
+          <ul className="flex flex-col p-6 gap-6 text-sm uppercase tracking-widest">
+            <li onClick={() => setIsMenuOpen(false)}><Link to="/">Home</Link></li>
+            <li onClick={() => setIsMenuOpen(false)}><Link to="/products">Shop</Link></li>
+            <li onClick={() => setIsMenuOpen(false)}><Link to="/about">About</Link></li>
+            <li onClick={() => setIsMenuOpen(false)}><Link to="/contact">Contact</Link></li>
+            <form onSubmit={handleSearch} className="flex border border-[#D4AF37] rounded overflow-hidden">
               <input
                 type="text"
-                placeholder="Search"
-                className="flex-1 px-3 py-2 bg-black text-white outline-none"
-                value={searchQuery} onChange={(e)=>setSearchQuery(e.target.value)}
+                className="bg-black flex-1 p-2 outline-none"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button className="bg-[#D4AF37] px-3 py-2 text-black"
-              onClick={handleSearch}>
-                <Search />
-              </button>
+              <button className="bg-[#D4AF37] px-4 text-black"><Search /></button>
             </form>
           </ul>
         </div>
       )}
     </nav>
-  )
+  );
 }
 
-export default Navbar
-
-
+export default Navbar;
