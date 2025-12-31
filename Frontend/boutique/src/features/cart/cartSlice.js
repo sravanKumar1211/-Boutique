@@ -30,7 +30,7 @@ const cartSlice = createSlice({
         message: null,
         success:false,
         removingId:null,
-        shippingInfo:{}
+        shippingInfo:JSON.parse(localStorage.getItem('cartItems')) || []
     },
     reducers: {
         removeItemsFromCart: (state, action) => {

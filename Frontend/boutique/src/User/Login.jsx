@@ -10,13 +10,13 @@ function Login() {
   const {error,loading,success,isAuthenticated} = useSelector(state => state.user);
   const dispatch = useDispatch()
   const navigate=useNavigate()
-  const redirect=new URLSearchParams(location.search).get('redirect') ||'/'
   const location=useLocation()
   const loginSubmit = (e) => {
     e.preventDefault()
     //console.log("Login Attempt:", { loginEmail, loginPassword })
     dispatch(login({email:loginEmail,password:loginPassword}))
   }
+  const redirect=new URLSearchParams(location.search).get('redirect') ||'/'
 
     useEffect(() => {
         if(error){
