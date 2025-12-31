@@ -16,6 +16,7 @@ function Shipping() {
     const [pincode, setPincode] = useState(shippingInfo.pincode || "");
     const [phone, setPhone] = useState(shippingInfo.phone || "");
     const [country, setCountry] = useState(shippingInfo.country || "");
+    console.log(shippingInfo)
 
     const handleSubmit = (e) => {
         e.preventDefault();
