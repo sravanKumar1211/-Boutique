@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { login, removeErrors, removeSuccess } from '../features/user/userSlice';
 import { toast } from 'react-toastify';
 import { useSelector,useDispatch } from 'react-redux';
+import Navbar from '../components/Navbar';
 
 function Login() {
   const [loginEmail, setLoginEmail] = useState("");
@@ -39,6 +40,8 @@ function Login() {
       }, [dispatch,success])
 
   return (
+    <>
+      <Navbar></Navbar>
     <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
       {/* Login Card Container */}
       <div className="max-w-md w-full space-y-8 bg-[#111] p-10 rounded-xl border border-[#6D1A36] shadow-[0_0_20px_rgba(109,26,54,0.3)]">
@@ -115,6 +118,7 @@ function Login() {
         </form>
       </div>
     </div>
+    </>
   )
 }
 

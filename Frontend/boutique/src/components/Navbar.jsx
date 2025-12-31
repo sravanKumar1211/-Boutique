@@ -6,21 +6,27 @@ import {
   ShoppingCart,
   Menu,
   Close,
-  Home,
-  Info,
-  Store,
-  ContactMail,
   PersonAdd,
 } from '@mui/icons-material';
-import UserDashboard from '../User/UserDashboard'; // Ensure path is correct
+import UserDashboard from '../User/UserDashboard'; 
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const {cartItems}=useSelector(state=>state.cart)
+  const { cartItems } = useSelector(state => state.cart);
   
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useSelector((state) => state.user);
+  
+  // 1. Get state from Redux
+  const { isAuthenticated: reduxAuth, user: reduxUser } = useSelector((state) => state.user);
+
+  // 2. Fallback Logic: Check Local Storage immediately to prevent icon disappearing on refresh
+  const localAuth = localStorage.getItem('isAuthenticated') === 'true';
+  const localUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null;
+
+  // 3. Final Constants: Prioritize Redux, but fallback to LocalStorage
+  const isAuthenticated = reduxAuth || localAuth;
+  const user = reduxUser || localUser;
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -32,6 +38,7 @@ function Navbar() {
     setSearchQuery('');
     setIsMenuOpen(false);
   };
+
   return (
     <nav className="bg-black text-white sticky top-0 z-50 border-b border-[#6D1A36] shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
@@ -85,7 +92,7 @@ function Navbar() {
             </span>
           </Link>
 
-          {/* User Profile Logic */}
+          {/* User Profile Logic - Using the combined local+redux variables */}
           <div className="flex items-center border-l border-gray-800 pl-4 ml-2">
             {isAuthenticated ? (
               <UserDashboard user={user} />

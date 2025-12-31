@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {toast} from 'react-toastify'
 import {useDispatch, useSelector} from 'react-redux'
 import { register, removeErrors, removeSuccess } from '../features/user/userSlice'
+import Navbar from '../components/Navbar'
 
 function Register() {
   const [user,setUser]=useState({
@@ -67,6 +68,7 @@ function Register() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
+      <Navbar></Navbar>
       <div className="max-w-md w-full space-y-8 bg-[#111] p-8 rounded-lg border border-[#6D1A36] shadow-2xl">
         
         {/* Header */}

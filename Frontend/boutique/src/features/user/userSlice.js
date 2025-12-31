@@ -84,11 +84,11 @@ export const resetPassword=createAsyncThunk('user/resetPassword',async({token,us
 const userSlice=createSlice({
     name:'user',
     initialState:{
-        user:null,
+        user:localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null,
         loading:true,
         error:null,
         success:false,
-        isAuthenticated:false,
+        isAuthenticated:localStorage.getItem('isAuthenticated')==='true',
         message:null
     },
     reducers:{
@@ -105,11 +105,13 @@ const userSlice=createSlice({
             state.error=null;
         })
         .addCase(register.fulfilled,(state,action)=>{
-            state.loading=false; // FIXED: was true
+            state.loading=false; 
             state.error=null;
             state.success=action.payload.success;
             state.user=action.payload?.user || null;
             state.isAuthenticated=Boolean(action.payload?.user);
+            localStorage.setItem('user',JSON.stringify(state.user))
+            localStorage.setItem('isAuthenticated',JSON.stringify(state.isAuthenticated))
         })
         .addCase(register.rejected,(state,action)=>{
             state.loading=false;
@@ -127,6 +129,8 @@ const userSlice=createSlice({
             state.success=action.payload.success;
             state.user=action.payload?.user || null;
             state.isAuthenticated=Boolean(action.payload?.user);
+            localStorage.setItem('user',JSON.stringify(state.user))
+            localStorage.setItem('isAuthenticated',JSON.stringify(state.isAuthenticated))
         })
         .addCase(login.rejected,(state,action)=>{
             state.loading=false;
@@ -142,17 +146,27 @@ const userSlice=createSlice({
             state.error=null;
             state.user=action.payload?.user || null;
             state.isAuthenticated=Boolean(action.payload?.user);
+            localStorage.setItem('user',JSON.stringify(state.user))
+            localStorage.setItem('isAuthenticated',JSON.stringify(state.isAuthenticated))
         })
         .addCase(loadUser.rejected,(state,action)=>{
             state.loading=false;
             state.user=null;
             state.isAuthenticated=false;
+            if(action.payload?.statusCode===401){
+                state.user=null;
+                state.isAuthenticated=false;
+                localStorage.removeItem('user')
+                localStorage.removeItem('isAuthenticated')
+            }
         })
 
          builder.addCase(logout.fulfilled,(state)=>{
             state.loading=false;
             state.user=null;
             state.isAuthenticated=false;
+            localStorage.removeItem('user')
+            localStorage.removeItem('isAuthenticated')
         })
         //UpdateUser Profile
          builder.addCase(updateProfile.pending,(state)=>{
