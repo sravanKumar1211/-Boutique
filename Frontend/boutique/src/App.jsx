@@ -18,6 +18,7 @@ import Cart from './Cart/Cart.jsx'
 import Shipping from './Cart/Shipping.jsx'
 import OrderConfirm from './Cart/OrderConfirm.jsx'
 import Payment from './Cart/Payment.jsx'
+import PaymentSuccess from './Cart/PaymentSuccess.jsx'
 
 function App() {
   const{isAuthenticated,user}=useSelector(state=>state.user)
@@ -47,6 +48,7 @@ function App() {
         {isAuthenticated && <Route path='/shipping' element={<Shipping></Shipping>}></Route>}
         {isAuthenticated && <Route path='/order/confirm' element={<OrderConfirm></OrderConfirm>}></Route>}
         {isAuthenticated && <Route path='/process/payment' element={<Payment></Payment>}></Route>}
+        {isAuthenticated && <Route path='/paymentSuccess' element={<PaymentSuccess></PaymentSuccess>}></Route>}
       </Routes>
        
       {/* {isAuthenticated && <UserDashboard user={user}></UserDashboard>} */}
