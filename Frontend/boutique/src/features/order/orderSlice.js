@@ -29,6 +29,19 @@ export const getAllMyOrders = createAsyncThunk(
   }
 );
 
+// 3. Get user order
+export const getOrderDetails = createAsyncThunk(
+  'order/getOrderDetails',
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.get(`/api/v1/order/${orderId}`);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Failed to get order details.');
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: 'order',
   initialState: {
@@ -71,12 +84,27 @@ const orderSlice = createSlice({
       })
       .addCase(getAllMyOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload.orders;
+        state.orders= action.payload.orders;
         state.success=action.payload.success
       })
       .addCase(getAllMyOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || 'Failed to get Orders'
+      })
+
+       // get order details
+      .addCase(getOrderDetails.pending, (state) => {
+        state.loading = true;
+        state.error=null;
+      })
+      .addCase(getOrderDetails.fulfilled, (state, action) => {
+        state.loading = false;
+        state.order= action.payload.order;
+        state.success=action.payload.success
+      })
+      .addCase(getOrderDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || 'Failed to get Order details'
       });
   }
 });
