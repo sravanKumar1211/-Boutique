@@ -52,7 +52,7 @@ function Dashboard() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/admin/products/create" className="flex items-center gap-3 text-sm text-gray-300 hover:text-[#D4AF37] transition-colors">
+                  <Link to="/admin/product/create" className="flex items-center gap-3 text-sm text-gray-300 hover:text-[#D4AF37] transition-colors">
                     <DashboardIcon fontSize="small" /> Create Product
                   </Link>
                 </li>
