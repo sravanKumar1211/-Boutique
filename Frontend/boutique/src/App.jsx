@@ -24,6 +24,7 @@ import OrderDetails from './Orders/OrderDetails.jsx'
 import Dashboard from './Admin/Dashboard.jsx'
 import ProductsList from './Admin/ProductsList.jsx'
 import CreateProduct from './Admin/CreateProduct.jsx'
+import UpdateProduct from './Admin/UpdateProduct.jsx'
 
 function App() {
   const{isAuthenticated,user}=useSelector(state=>state.user)
@@ -59,6 +60,8 @@ function App() {
         {isAuthenticated && <Route path='/admin/dashboard' element={<Dashboard></Dashboard>}></Route>}
         {isAuthenticated && <Route path='/admin/products' element={<ProductsList></ProductsList>}></Route>}
         {isAuthenticated && <Route path='/admin/product/create' element={<CreateProduct></CreateProduct>}></Route>}
+        {isAuthenticated && <Route path='/admin/product/create' element={<CreateProduct></CreateProduct>}></Route>}
+        {isAuthenticated && <Route path='/admin/product/:updateId' element={<UpdateProduct></UpdateProduct>}></Route>}
       </Routes>
        
       {/* {isAuthenticated && <UserDashboard user={user}></UserDashboard>} */}
