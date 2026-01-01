@@ -73,26 +73,119 @@ export const getAllProducts =handleAsyncError( async (req, res, next) => {
   }
 })
 
-// Update product
-export const updateProduct =handleAsyncError( async (req, res, next) => {
+// // Update product
+// export const updateProduct =handleAsyncError( async (req, res, next) => {
+//   try {
+
+//  let product = await Product.findById(req.params.id)
+
+//     if (!product) {
+//       return next(new HandleError("Product Not Found", 404))
+//     }
+
+//     product = await Product.findByIdAndUpdate(
+//       req.params.id,
+//       req.body,
+//       { new: true, runValidators: true }
+//     )
+
+//     let images=[];
+//     if (typeof req.body.image=='string'){
+//       images.push(req.body.image)
+//     }else if(Array.isArray(req.body.image)){
+//       images=req.body.image
+//     }
+//     if(images.length>0){
+//       for(let i=0;i<product.image.length;i++){
+//         await cloudinary.uploader.destroy(product.image[i].public_id)
+//       }
+//       //Upload new images
+      
+//     const imageLinks = [];
+
+//     // 2. Upload to Cloudinary
+//     if (images && images.length > 0) {
+//       for (let i = 0; i < images.length; i++) {
+//         // FIXED: Changed cloudinary.v2.uploader to cloudinary.uploader
+//         const result = await cloudinary.uploader.upload(images[i], {
+//           folder: 'products'
+//         });
+        
+//         imageLinks.push({
+//           public_id: result.public_id,
+//           url: result.secure_url
+//         });
+//       }
+//      }
+//      req.body.image=imageLinks
+//     }
+
+//     res.status(200).json({ success: true, product })
+//   } catch (error) {
+//     next(error)
+//   }
+// })
+
+
+export const updateProduct = handleAsyncError(async (req, res, next) => {
   try {
-    let product = await Product.findById(req.params.id)
+    let product = await Product.findById(req.params.id);
 
     if (!product) {
-      return next(new HandleError("Product Not Found", 404))
+      return next(new HandleError("Product Not Found", 404));
     }
 
+    // 1. Check if new images are being sent
+    let images = [];
+
+    // Use 'images' to stay consistent with your Create controller and Frontend
+    if (typeof req.body.images === 'string') {
+      images.push(req.body.images);
+    } else if (Array.isArray(req.body.images)) {
+      images = req.body.images;
+    }
+
+    // 2. If new images exist, delete old ones and upload new ones
+    if (images.length > 0) {
+      // Deleting images from Cloudinary
+      // Safely access product.images (singular/plural check depends on your Model)
+      const oldImages = product.images || []; 
+      for (let i = 0; i < oldImages.length; i++) {
+        await cloudinary.uploader.destroy(oldImages[i].public_id);
+      }
+
+      const imageLinks = [];
+      for (let i = 0; i < images.length; i++) {
+        const result = await cloudinary.uploader.upload(images[i], {
+          folder: 'products',
+        });
+
+        imageLinks.push({
+          public_id: result.public_id,
+          url: result.secure_url,
+        });
+      }
+
+      // Add the new image links to the body before updating DB
+      req.body.images = imageLinks;
+    }
+
+    // 3. Final update to the database with everything included
     product = await Product.findByIdAndUpdate(
       req.params.id,
       req.body,
-      { new: true, runValidators: true }
-    )
+      { new: true, runValidators: true, useFindAndModify: false }
+    );
 
-    res.status(200).json({ success: true, product })
+    res.status(200).json({ 
+      success: true, 
+      product 
+    });
+    
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 // Delete product
 export const deleteProduct =handleAsyncError( async (req, res, next) => {
