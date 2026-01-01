@@ -4,33 +4,47 @@ import handleAsyncError from "../middleware/handleAsyncError.js";
 import APIFunctionality from "../utils/apiFunctionality.js";
 import {v2 as cloudinary} from 'cloudinary'
 
-// Create Product
-export const createProducts =handleAsyncError(async (req, res, next) => {
+//create Product
+export const createProducts = handleAsyncError(async (req, res, next) => {
   try {
-    let image=[];
-    if(typeof req.body.image=="string"){
-      image.push(req.body.image)
-    }else{
-      image=req.body.image
+    // 1. Check 'images' (matching the frontend name)
+    let images = [];
+    if (req.body.images) {
+      if (typeof req.body.images === "string") {
+        images.push(req.body.images);
+      } else {
+        images = req.body.images;
+      }
     }
-    const imageLinks=[];
-    for(let i=0;i<image.length;i++){
-      const result=await cloudinary.uploader.upload(image[i],{
-        folder:'products'
-      })
-      imageLinks.push({
-        public_id:result.public_id,
-        url:result.secure_url
-      })
+
+    const imageLinks = [];
+
+    // 2. Upload to Cloudinary
+    if (images && images.length > 0) {
+      for (let i = 0; i < images.length; i++) {
+        // FIXED: Changed cloudinary.v2.uploader to cloudinary.uploader
+        const result = await cloudinary.uploader.upload(images[i], {
+          folder: 'products'
+        });
+        
+        imageLinks.push({
+          public_id: result.public_id,
+          url: result.secure_url
+        });
+      }
     }
-    req.body.image=imageLinks
-    req.body.user=req.user.id;//gives the user id
-    const product = await Product.create(req.body)
-    res.status(201).json({ success: true, product })
+
+    // 3. Reassign to body and set user
+    req.body.images = imageLinks; 
+    req.body.user = req.user.id;
+
+    const product = await Product.create(req.body);
+    res.status(201).json({ success: true, product });
+
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
 
 // Get all products
 export const getAllProducts =handleAsyncError( async (req, res, next) => {
