@@ -17,7 +17,7 @@ function Profile() {
         <Navbar />
         <div className="min-h-screen bg-black text-white flex flex-col md:flex-row items-center justify-center px-6 py-12 gap-10 md:gap-20">
             {/* Left Section - Avatar and Edit */}
-            <PageTitle title={`${user.name} Profile`}></PageTitle>
+            <PageTitle title={`${user?.name} Profile`}></PageTitle>
             <div className="flex flex-col items-center space-y-6">
                 <h1 className="text-[#D4AF37] text-3xl font-bold tracking-[0.3em] uppercase md:hidden">My Profile</h1>
                 

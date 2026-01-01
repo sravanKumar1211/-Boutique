@@ -12,11 +12,13 @@ function Shipping() {
     const navigate = useNavigate();
     const { shippingInfo } = useSelector((state) => state.cart);
 
+    // Added City and State to the local state
     const [address, setAddress] = useState(shippingInfo.address || "");
-    const [pincode, setPincode] = useState(shippingInfo.pincode || "");
+    const [city, setCity] = useState(shippingInfo.city || "");
+    const [state, setState] = useState(shippingInfo.state || "");
+    const [pincode, setPincode] = useState(shippingInfo.pinCode || ""); // Changed to pinCode to match backend consistency
     const [phone, setPhone] = useState(shippingInfo.phone || "");
     const [country, setCountry] = useState(shippingInfo.country || "");
-    console.log(shippingInfo)
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,7 +26,9 @@ function Shipping() {
             alert("Phone number must be 10 digits");
             return;
         }
-        dispatch(saveShippingInfo({ address, pincode, phone, country }));
+        
+        // Dispatching all fields including city and state
+        dispatch(saveShippingInfo({ address, city, state, pinCode: pincode, phone, country }));
         navigate("/order/confirm");
     };
 
@@ -34,7 +38,7 @@ function Shipping() {
             <Navbar />
             
             <div className="max-w-xl mx-auto px-6 pb-20">
-                <CheckoutPath activePath={0}  />
+                <CheckoutPath activePath={0} />
 
                 <div className="bg-[#111] p-8 rounded-lg border border-gray-900 shadow-2xl">
                     <h1 className="text-2xl font-bold text-[#D4AF37] uppercase tracking-widest mb-8 text-center">
@@ -42,6 +46,7 @@ function Shipping() {
                     </h1>
                     
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Street Address */}
                         <div className="space-y-2">
                             <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Street Address</label>
                             <input 
@@ -54,6 +59,33 @@ function Shipping() {
                             />
                         </div>
 
+                        {/* City and State Grid */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">City</label>
+                                <input 
+                                    required
+                                    type="text" 
+                                    value={city}
+                                    onChange={(e) => setCity(e.target.value)}
+                                    className="w-full bg-black border border-gray-800 p-3 rounded focus:border-[#D4AF37] outline-none text-sm transition"
+                                    placeholder="Mumbai" 
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">State</label>
+                                <input 
+                                    required
+                                    type="text" 
+                                    value={state}
+                                    onChange={(e) => setState(e.target.value)}
+                                    className="w-full bg-black border border-gray-800 p-3 rounded focus:border-[#D4AF37] outline-none text-sm transition"
+                                    placeholder="Maharashtra" 
+                                />
+                            </div>
+                        </div>
+
+                        {/* Pincode and Phone Grid */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Pincode</label>
@@ -79,6 +111,7 @@ function Shipping() {
                             </div>
                         </div>
 
+                        {/* Country */}
                         <div className="space-y-2">
                             <label className="text-[10px] uppercase tracking-widest text-gray-500 font-bold ml-1">Country</label>
                             <input 
@@ -93,7 +126,7 @@ function Shipping() {
 
                         <button 
                             type="submit"
-                            className="w-full bg-[#D4AF37] text-black font-black py-4 rounded mt-4 uppercase tracking-[0.3em] hover:bg-white transition duration-500"
+                            className="w-full bg-[#D4AF37] text-black font-black py-4 rounded mt-4 uppercase tracking-[0.3em] hover:bg-white transition duration-500 shadow-lg"
                         >
                             Continue to Review
                         </button>
