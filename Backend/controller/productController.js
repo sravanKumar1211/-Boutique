@@ -73,59 +73,6 @@ export const getAllProducts =handleAsyncError( async (req, res, next) => {
   }
 })
 
-// // Update product
-// export const updateProduct =handleAsyncError( async (req, res, next) => {
-//   try {
-
-//  let product = await Product.findById(req.params.id)
-
-//     if (!product) {
-//       return next(new HandleError("Product Not Found", 404))
-//     }
-
-//     product = await Product.findByIdAndUpdate(
-//       req.params.id,
-//       req.body,
-//       { new: true, runValidators: true }
-//     )
-
-//     let images=[];
-//     if (typeof req.body.image=='string'){
-//       images.push(req.body.image)
-//     }else if(Array.isArray(req.body.image)){
-//       images=req.body.image
-//     }
-//     if(images.length>0){
-//       for(let i=0;i<product.image.length;i++){
-//         await cloudinary.uploader.destroy(product.image[i].public_id)
-//       }
-//       //Upload new images
-      
-//     const imageLinks = [];
-
-//     // 2. Upload to Cloudinary
-//     if (images && images.length > 0) {
-//       for (let i = 0; i < images.length; i++) {
-//         // FIXED: Changed cloudinary.v2.uploader to cloudinary.uploader
-//         const result = await cloudinary.uploader.upload(images[i], {
-//           folder: 'products'
-//         });
-        
-//         imageLinks.push({
-//           public_id: result.public_id,
-//           url: result.secure_url
-//         });
-//       }
-//      }
-//      req.body.image=imageLinks
-//     }
-
-//     res.status(200).json({ success: true, product })
-//   } catch (error) {
-//     next(error)
-//   }
-// })
-
 
 export const updateProduct = handleAsyncError(async (req, res, next) => {
   try {
