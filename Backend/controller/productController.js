@@ -112,7 +112,7 @@ export const updateProduct = handleAsyncError(async (req, res, next) => {
 // Get all products
 export const getAllProducts = handleAsyncError(async (req, res, next) => {
   try {
-    const resultsPerPage = 2;
+    const resultsPerPage = 4;
     const apiFeatures = new APIFunctionality(Product.find(), req.query).search().filter();
     
     const filteredQuery = apiFeatures.query.clone();
