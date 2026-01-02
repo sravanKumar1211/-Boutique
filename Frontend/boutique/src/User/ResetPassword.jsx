@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { resetPassword, removeErrors, removeSuccess } from '../features/user/userSlice';
 
 function ResetPassword() {
-    const { token } = useParams(); // To get the token from the URL
+    const { token } = useParams();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     
@@ -18,21 +18,16 @@ function ResetPassword() {
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const resetPasswordSubmit = (e) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    if (password !== confirmPassword) {
-        toast.error("Passwords do not match");
-        return;
-    }
+        if (password !== confirmPassword) {
+            toast.error("Passwords do not match");
+            return;
+        }
 
-    // Use a plain object instead of FormData for JSON compatibility
-    const userData = {
-        password,
-        confirmPassword
+        const userData = { password, confirmPassword };
+        dispatch(resetPassword({ token, userData }));
     };
-
-    dispatch(resetPassword({ token, userData }));
-};
 
     useEffect(() => {
         if (error) {
@@ -51,57 +46,60 @@ function ResetPassword() {
             <PageTitle title='Reset Password' />
             <Navbar />
             
-            <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
-                <div className="max-w-md w-full bg-[#111] p-8 rounded-lg border border-[#6D1A36] shadow-2xl">
+            <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+                <div className="max-w-sm w-full border border-[#76153C]/30 rounded-md p-6">
                     
-                    {/* Header Section */}
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-[#D4AF37] tracking-widest uppercase">
-                            New Password
-                        </h2>
-                        <div className="h-1 w-20 bg-[#6D1A36] mx-auto mt-2"></div>
-                        <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-6">
-                            Set your new security credentials
-                        </p>
-                    </div>
+                    {/* Header */}
+                    <h2 className="text-xl font-semibold text-black mb-2">
+                        Create new password
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-6">
+                        Enter a new password for your account.
+                    </p>
 
-                    <form onSubmit={resetPasswordSubmit} className="space-y-6">
+                    <form onSubmit={resetPasswordSubmit} className="space-y-4">
+                        
                         {/* New Password */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">
-                                New Password
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                New password
                             </label>
                             <input 
                                 type="password" 
-                                placeholder='Enter your password' 
                                 required
-                                value={password} 
+                                value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300 placeholder:text-gray-700"
+                                placeholder="Enter new password"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
                         {/* Confirm Password */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">
-                                Confirm Password
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Re-enter password
                             </label>
                             <input 
                                 type="password" 
-                                placeholder='Confirm Password' 
                                 required
-                                value={confirmPassword} 
+                                value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300 placeholder:text-gray-700"
+                                placeholder="Confirm new password"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
-                        {/* Submit Button */}
+                        {/* Submit */}
                         <button 
                             type="submit"
-                            className="w-full py-3 bg-[#D4AF37] text-black font-bold uppercase tracking-widest rounded hover:bg-[#b8962d] transition duration-300 shadow-lg shadow-[#D4AF37]/10 active:scale-95"
+                            className="w-full py-2.5 bg-[#67B2D8] text-black text-sm font-semibold rounded
+                                       hover:bg-[#BF124D] hover:text-white transition"
                         >
-                            {loading ? "Resetting..." : "Update Password"}
+                            {loading ? "Updating..." : "Save changes"}
                         </button>
                     </form>
                 </div>

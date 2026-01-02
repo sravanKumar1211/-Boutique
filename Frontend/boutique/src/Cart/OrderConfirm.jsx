@@ -26,51 +26,66 @@ function OrderConfirm() {
             tax,
             totalPrice,
         };
-        // Storing in sessionStorage for the final payment step
         sessionStorage.setItem("orderInfo", JSON.stringify(data));
         navigate("/process/payment");
     };
 
     return (
-        <div className="bg-black min-h-screen text-white pb-20">
+        <div className="bg-[#f0f2f2] min-h-screen text-gray-800 pb-20">
             <PageTitle title='Confirm Order' />
             <Navbar />
-            <div className="max-w-7xl mx-auto px-4">
+            
+            <div className="max-w-[1150px] mx-auto px-4">
                 <CheckoutPath activePath={1} />
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-10">
+                <h1 className="text-2xl font-medium mb-6 text-[#5A0E24]">Review your order</h1>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
                     {/* Left: Shipping and Items Details */}
-                    <div className="lg:col-span-2 space-y-10">
+                    <div className="lg:col-span-2 space-y-4">
                         
-                        {/* Shipping Info Section */}
-                        <div className="bg-[#111] p-6 rounded-lg border border-gray-900 shadow-xl">
-                            <h2 className="text-[#D4AF37] text-xl font-bold uppercase tracking-widest mb-6 border-l-4 border-[#6D1A36] pl-3">
-                                Shipping Information
-                            </h2>
-                            <div className="space-y-3 text-sm tracking-wide">
-                                <div className="flex gap-4"><span className="text-gray-500 w-20">Name:</span> <span>{user?.name}</span></div>
-                                <div className="flex gap-4"><span className="text-gray-500 w-20">Phone:</span> <span>{shippingInfo?.phone}</span></div>
-                                <div className="flex gap-4"><span className="text-gray-500 w-20">Address:</span> <span className="text-gray-300">{address}</span></div>
+                        {/* Shipping Info Section - Amazon Card Style */}
+                        <div className="bg-white p-6 rounded-sm border border-gray-200 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <h2 className="text-sm font-bold text-[#5A0E24] mb-2 uppercase tracking-tight">Shipping Address</h2>
+                                <div className="text-[13px] leading-relaxed">
+                                    <p className="font-semibold">{user?.name}</p>
+                                    <p>{shippingInfo?.address}</p>
+                                    <p>{shippingInfo?.country} - {shippingInfo?.pincode}</p>
+                                    <p className="text-[#67B2D8] hover:underline cursor-pointer">Change</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-bold text-[#5A0E24] mb-2 uppercase tracking-tight">Payment Method</h2>
+                                <div className="text-[13px] leading-relaxed">
+                                    <p>Credit/Debit Card</p>
+                                    <p className="text-[#67B2D8] hover:underline cursor-pointer">Change</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h2 className="text-sm font-bold text-[#5A0E24] mb-2 uppercase tracking-tight">Promotional Code</h2>
+                                <p className="text-[13px] text-gray-500 italic">Enter code at payment step</p>
                             </div>
                         </div>
 
-                        {/* Cart Items List */}
-                        <div className="bg-[#111] p-6 rounded-lg border border-gray-900">
-                            <h2 className="text-[#D4AF37] text-xl font-bold uppercase tracking-widest mb-6 border-l-4 border-[#6D1A36] pl-3">
-                                Your Shipment
+                        {/* Shipment Preview Card */}
+                        <div className="bg-white rounded-sm border border-gray-200 shadow-sm p-6">
+                            <h2 className="text-lg font-bold text-[#5A0E24] mb-4">
+                                <span className="text-green-700">Arriving tomorrow</span>
+                                <span className="text-sm text-gray-500 font-normal ml-2">If you order in the next 2 hours</span>
                             </h2>
-                            <div className="space-y-4">
+                            
+                            <div className="space-y-6">
                                 {cartItems && cartItems.map((item) => (
-                                    <div key={item.product} className="flex items-center justify-between border-b border-gray-800 pb-4 last:border-0">
-                                        <div className="flex items-center gap-4">
-                                            <img src={item.image} alt="Product" className="w-16 h-16 object-contain bg-black rounded p-1" />
-                                            <div>
-                                                <p className="text-sm font-medium">{item.name}</p>
-                                                <p className="text-xs text-gray-500">{item.quantity} x ₹{item.price}</p>
-                                            </div>
+                                    <div key={item.product} className="flex gap-4 border-b border-gray-100 pb-4 last:border-0">
+                                        <img src={item.image} alt="Product" className="w-20 h-20 object-contain" />
+                                        <div className="flex-grow">
+                                            <p className="text-sm font-bold text-[#5A0E24]">{item.name}</p>
+                                            <p className="text-xs text-[#BF124D] font-bold mt-1">₹{item.price}</p>
+                                            <p className="text-xs text-gray-600 mt-1">Quantity: {item.quantity}</p>
+                                            <p className="text-[10px] text-gray-400 mt-2 uppercase">Sold by: YourBrand Luxury</p>
                                         </div>
-                                        <span className="text-sm font-bold text-[#D4AF37]">₹{item.quantity * item.price}</span>
                                     </div>
                                 ))}
                             </div>
@@ -79,34 +94,49 @@ function OrderConfirm() {
 
                     {/* Right: Order Summary Section */}
                     <div className="lg:col-span-1">
-                        <div className="bg-[#111] p-8 rounded-lg border border-[#6D1A36] sticky top-24 shadow-2xl">
-                            <h3 className="text-xl font-bold text-[#D4AF37] mb-8 uppercase tracking-widest text-center">Order Summary</h3>
-                            
-                            <div className="space-y-5 text-sm">
-                                <div className="flex justify-between text-gray-400">
-                                    <span>Subtotal:</span>
-                                    <span>₹{subtotal.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-gray-400">
-                                    <span>Shipping:</span>
-                                    <span>₹{shippingCharges.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-gray-400 border-b border-gray-800 pb-4">
-                                    <span>GST (18%):</span>
-                                    <span>₹{tax.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-xl font-bold text-[#D4AF37] pt-2">
-                                    <span>Total:</span>
-                                    <span>₹{totalPrice.toFixed(2)}</span>
-                                </div>
-                            </div>
-
+                        <div className="bg-white p-5 rounded-md border border-gray-300 sticky top-4 h-fit">
                             <button 
                                 onClick={proceedToPayment}
-                                className="w-full mt-10 bg-[#D4AF37] text-black font-black py-4 rounded hover:bg-white transition duration-500 uppercase tracking-[0.2em] shadow-lg shadow-[#D4AF37]/10"
+                                className="w-full bg-[#BF124D] text-white font-medium py-2 rounded-lg hover:bg-[#76153C] transition shadow-sm mb-4 text-sm"
                             >
-                                Proceed to Payment
+                                Use this payment method
                             </button>
+                            
+                            <p className="text-[11px] text-gray-500 text-center mb-4 leading-tight">
+                                By placing your order, you agree to our <span className="text-[#67B2D8]">privacy notice</span> and <span className="text-[#67B2D8]">conditions of use</span>.
+                            </p>
+
+                            <div className="border-t border-gray-200 pt-4">
+                                <h3 className="text-sm font-bold mb-3">Order Summary</h3>
+                                <div className="space-y-2 text-xs">
+                                    <div className="flex justify-between">
+                                        <span>Items:</span>
+                                        <span>₹{subtotal.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Shipping & handling:</span>
+                                        <span>₹{shippingCharges.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Total before tax:</span>
+                                        <span>₹{(subtotal + shippingCharges).toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between pb-2 border-b border-gray-100">
+                                        <span>Estimated tax (GST 18%):</span>
+                                        <span>₹{tax.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-lg font-bold text-[#BF124D] pt-2">
+                                        <span>Order Total:</span>
+                                        <span>₹{totalPrice.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-4 bg-[#f0f2f2] p-3 rounded-sm border-t border-gray-200">
+                                <p className="text-[#67B2D8] text-[11px] font-bold hover:underline cursor-pointer">
+                                    How are shipping costs calculated?
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

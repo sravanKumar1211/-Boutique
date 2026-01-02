@@ -7,12 +7,12 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Cart() {
-    // Note: ensure 'cart' matches the key in your store.js
     const { cartItems } = useSelector(state => state.cart);
-    const navigate=useNavigate()
-    const checkoutHandler=()=>{
-        navigate(`/login?redirect=/shipping`)
-    }
+    const navigate = useNavigate();
+    
+    const checkoutHandler = () => {
+        navigate(`/login?redirect=/shipping`);
+    };
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
     const tax = subtotal * 0.18;
@@ -20,59 +20,84 @@ function Cart() {
     const total = subtotal + tax + shipping;
 
     return (
-        <div className="bg-black min-h-screen text-white font-sans">
-            <PageTitle title='Your Cart' />
+        <div className="bg-[#f0f2f2] min-h-screen font-sans">
+            <PageTitle title='Shopping Cart' />
             <Navbar />
             
-            <div className="max-w-7xl mx-auto px-4 py-10">
-                <h2 className="text-2xl font-bold text-[#D4AF37] mb-8 uppercase tracking-widest border-b border-[#6D1A36] pb-2">
-                    Shopping Cart
-                </h2>
-
-                {cartItems.length === 0 ? (
-                    <div className="text-center py-20">
-                        <p className="text-gray-500 mb-6">Your bag is currently empty.</p>
-                        <Link to="/products" className="bg-[#6D1A36] px-8 py-3 rounded hover:bg-[#D4AF37] hover:text-black transition">
-                            View Products
-                        </Link>
-                    </div>
-                ) : (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        {/* Items Section */}
-                        <div className="lg:col-span-2 space-y-4">
-                            {cartItems.map((item) => (
-                                <CartItem item={item} key={item.product} />
-                            ))}
+            <div className="max-w-[1500px] mx-auto px-4 py-6">
+                <div className="flex flex-col lg:flex-row gap-6">
+                    
+                    {/* LEFT SECTION: CART ITEMS */}
+                    <div className="flex-grow bg-white p-4 md:p-6 shadow-sm rounded-sm">
+                        <h1 className="text-3xl font-medium text-[#5A0E24] mb-1">
+                            Shopping Cart
+                        </h1>
+                        <p className="text-[#67B2D8] text-sm hover:underline cursor-pointer mb-4">
+                            Deselect all items
+                        </p>
+                        <div className="hidden md:block text-right text-sm text-gray-600 border-b border-gray-200 pb-1">
+                            Price
                         </div>
 
-                        {/* Summary Section */}
-                        <div className="bg-gray-900/50 p-6 rounded-lg border border-[#6D1A36] h-fit sticky top-24">
-                            <h3 className="text-lg font-bold text-[#D4AF37] mb-6 uppercase tracking-wider">Order Summary</h3>
-                            <div className="space-y-4 text-sm">
-                                <div className="flex justify-between text-gray-400">
-                                    <span>Subtotal</span>
-                                    <span>₹{subtotal.toFixed(2)}</span>
+                        {cartItems.length === 0 ? (
+                            <div className="py-12 text-center">
+                                <h2 className="text-xl text-gray-800 mb-4">Your Amazon Cart is empty.</h2>
+                                <Link to="/products" className="text-[#67B2D8] hover:underline hover:text-[#BF124D]">
+                                    Continue shopping
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-gray-200">
+                                {cartItems.map((item) => (
+                                    <div key={item.product} className="py-4">
+                                        <CartItem item={item} />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {cartItems.length > 0 && (
+                            <div className="text-right py-4 text-lg">
+                                Subtotal ({cartItems.length} items): 
+                                <span className="font-bold text-[#5A0E24] ml-1">₹{subtotal.toFixed(2)}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* RIGHT SECTION: PROCEED TO CHECKOUT */}
+                    {cartItems.length > 0 && (
+                        <div className="lg:w-[300px] flex flex-col gap-4">
+                            <div className="bg-white p-5 shadow-sm rounded-sm h-fit">
+                                <div className="text-lg mb-4">
+                                    <span className="text-gray-700">Subtotal ({cartItems.length} items): </span>
+                                    <span className="font-bold text-[#5A0E24]">₹{total.toFixed(2)}</span>
+                                    <div className="text-xs text-gray-500 mt-1">
+                                        (Inc. Tax: ₹{tax.toFixed(2)} + Shipping: ₹{shipping.toFixed(2)})
+                                    </div>
                                 </div>
-                                <div className="flex justify-between text-gray-400">
-                                    <span>Tax (18%)</span>
-                                    <span>₹{tax.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-gray-400 border-b border-gray-800 pb-4">
-                                    <span>Shipping</span>
-                                    <span>₹{shipping.toFixed(2)}</span>
-                                </div>
-                                <div className="flex justify-between text-xl font-bold text-[#D4AF37] pt-2">
-                                    <span>Total</span>
-                                    <span>₹{total.toFixed(2)}</span>
+                                
+                                <button 
+                                    className="w-full bg-[#BF124D] hover:bg-[#76153C] text-white py-2 rounded-lg shadow-md transition-all font-medium text-sm"
+                                    onClick={checkoutHandler}
+                                >
+                                    Proceed to Checkout
+                                </button>
+
+                                <div className="mt-4 border border-gray-200 rounded-md p-3">
+                                    <p className="text-xs text-gray-600">
+                                        Select this option at checkout to see details. <span className="text-[#67B2D8] hover:underline cursor-pointer">Learn more</span>
+                                    </p>
                                 </div>
                             </div>
-                            <button className="w-full mt-8 bg-[#6D1A36] text-white font-bold py-3 rounded hover:bg-[#D4AF37] hover:text-black transition uppercase tracking-widest"
-                             onClick={checkoutHandler}>
-                                Proceed to Checkout
-                            </button>
+
+                            {/* Promotional Box (Optional/Amazon Style) */}
+                            <div className="bg-white p-4 shadow-sm rounded-sm border border-gray-100">
+                                <p className="text-sm font-bold text-[#5A0E24]">Your order qualifies for FREE Shipping</p>
+                                <p className="text-xs text-gray-500">Choose this option at checkout. See details</p>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
             <Footer />
         </div>
@@ -80,9 +105,3 @@ function Cart() {
 }
 
 export default Cart;
-
-
-
-
-
-

@@ -26,12 +26,8 @@ function UpdateProfile() {
                 setAvatar(reader.result)
             }
         }
-        reader.onerror = () => {
-            toast.error('Error reading file');
-        }
-        if(e.target.files[0]) {
-            reader.readAsDataURL(e.target.files[0]);
-        }
+        reader.onerror = () => toast.error('Error reading file');
+        if (e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
     }
 
     const updateSubmit = (e) => {
@@ -64,81 +60,97 @@ function UpdateProfile() {
         <>
             <PageTitle title="Update Profile" />
             <Navbar />
-            
-            <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
-                <div className="max-w-md w-full bg-[#111] p-8 rounded-lg border border-[#6D1A36] shadow-2xl">
-                    
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-[#D4AF37] tracking-widest uppercase">
-                            Update Profile
-                        </h2>
-                        <div className="h-1 w-20 bg-[#6D1A36] mx-auto mt-2"></div>
-                    </div>
 
-                    <form 
-                        className="space-y-6" 
-                        encType='multipart/form-data' 
+            <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+                <div className="max-w-sm w-full border border-[#76153C]/30 rounded-md p-6">
+
+                    {/* Header */}
+                    <h2 className="text-xl font-semibold text-black mb-2">
+                        Edit profile
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-6">
+                        Update your personal information below.
+                    </p>
+
+                    <form
+                        className="space-y-4"
+                        encType="multipart/form-data"
                         onSubmit={updateSubmit}
                     >
-                        {/* Avatar Section */}
-                        <div className="flex flex-col items-center gap-4 mb-6">
-                            <div className="w-24 h-24 rounded-full border-2 border-[#D4AF37] overflow-hidden">
-                                <img 
-                                    src={avatarPreview} 
-                                    alt="Avatar Preview" 
+
+                        {/* Avatar */}
+                        <div className="flex items-center gap-4">
+                            <div className="w-16 h-16 rounded-full overflow-hidden border border-[#76153C]/30">
+                                <img
+                                    src={avatarPreview}
+                                    alt="Avatar Preview"
                                     className="w-full h-full object-cover"
                                 />
                             </div>
-                            <input 
-                                type="file" 
-                                name='avatar' 
-                                accept='image/*' 
+
+                            <input
+                                type="file"
+                                name="avatar"
+                                accept="image/*"
                                 onChange={profileImageUpdate}
-                                className="block w-full text-xs text-gray-400
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-md file:border-0
-                                    file:text-xs file:font-semibold
-                                    file:bg-[#6D1A36] file:text-white
-                                    hover:file:bg-[#D4AF37] hover:file:text-black
-                                    transition-all cursor-pointer"
+                                className="text-xs text-gray-600
+                                           file:mr-3 file:py-1.5 file:px-3
+                                           file:rounded file:border-0
+                                           file:text-xs file:font-semibold
+                                           file:bg-[#67B2D8] file:text-black
+                                           hover:file:bg-[#BF124D] hover:file:text-white
+                                           cursor-pointer transition"
                             />
                         </div>
 
-                        {/* Name Input */}
+                        {/* Name */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">Full Name</label>
-                            <input 
-                                type="text" 
-                                placeholder="Enter Name"
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Full name
+                            </label>
+                            <input
+                                type="text"
                                 required
-                                value={name} 
-                                name='name' 
+                                value={name}
+                                name="name"
                                 onChange={(e) => setName(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300"
+                                placeholder="Your name"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
-                        {/* Email Input */}
+                        {/* Email */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">Email Address</label>
-                            <input 
-                                type="email" 
-                                placeholder="Enter Email"
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Email address
+                            </label>
+                            <input
+                                type="email"
                                 required
-                                value={email} 
-                                name='email' 
+                                value={email}
+                                name="email"
                                 onChange={(e) => setemail(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300"
+                                placeholder="Email address"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
-                        {/* Submit Button */}
-                        <button 
+                        {/* Submit */}
+                        <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full py-3 bg-[#D4AF37] text-black font-bold uppercase tracking-widest rounded hover:bg-[#b8962d] transition duration-300 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                            className={`w-full py-2.5 text-sm font-semibold rounded transition
+                            ${
+                                loading
+                                    ? "bg-gray-300 cursor-not-allowed"
+                                    : "bg-[#67B2D8] hover:bg-[#BF124D] hover:text-white text-black"
+                            }`}
                         >
-                            {loading ? "Updating..." : "Update Profile"}
+                            {loading ? "Updating..." : "Save changes"}
                         </button>
                     </form>
                 </div>

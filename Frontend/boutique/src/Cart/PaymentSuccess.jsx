@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { CheckCircleOutline, ShoppingBag, ReceiptLong } from '@mui/icons-material';
+import { ShoppingBag, ReceiptLong, CheckCircle } from '@mui/icons-material';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import PageTitle from '../components/PageTitle';
@@ -14,7 +14,6 @@ function PaymentSuccess() {
     const reference = searchParams.get('reference');
     const dispatch = useDispatch();
     
-    // Ref to prevent double execution in React.StrictMode
     const hasExecuted = useRef(false);
 
     const { cartItems, shippingInfo } = useSelector(state => state.cart);
@@ -26,7 +25,6 @@ function PaymentSuccess() {
             return ;
         }
 
-        // Only run if we have a reference and haven't already created the order
         if (reference && !hasExecuted.current && orderInfo) {
             const orderData = {
                 shippingInfo: {
@@ -56,14 +54,12 @@ function PaymentSuccess() {
 
             dispatch(createOrder(orderData));
             hasExecuted.current = true;
-            
-            // Clean up session storage after dispatching
             sessionStorage.removeItem('orderInfo');
         }
 
          if (success) {
             toast.success('order placed');
-            dispatch(clearCart)
+            dispatch(clearCart());
             dispatch(clearErrors());
         }
         if (error) {
@@ -71,55 +67,77 @@ function PaymentSuccess() {
             dispatch(clearErrors());
         }
 
-    }, [dispatch, reference, cartItems, shippingInfo, error,success]);
+    }, [dispatch, reference, cartItems, shippingInfo, error, success]);
 
     return (
-        <div className="bg-black min-h-screen text-white flex flex-col">
-            <PageTitle title="Payment Successful" />
+        <div className="bg-[#f0f2f2] min-h-screen text-gray-800 flex flex-col font-sans">
+            <PageTitle title="Thank You - Order Confirmed" />
             <Navbar />
 
-            <div className="flex-grow flex items-center justify-center px-4 py-20">
-                <div className="max-w-md w-full bg-[#0a0a0a] border border-[#6D1A36] p-10 rounded-sm text-center shadow-[0_0_50px_rgba(109,26,54,0.15)]">
+            <div className="flex-grow flex flex-col items-center px-4 py-10 md:py-16">
+                <div className="max-w-2xl w-full bg-white border border-gray-200 p-6 md:p-10 rounded-sm shadow-sm">
                     
-                    <div className="mb-6 flex justify-center">
-                        <div className="relative">
-                            <CheckCircleOutline sx={{ fontSize: 80, color: '#D4AF37' }} />
-                            <div className="absolute inset-0 animate-ping rounded-full bg-[#D4AF37]/10"></div>
+                    {/* Amazon Success Header */}
+                    <div className="flex items-start gap-4 mb-6">
+                        <CheckCircle sx={{ fontSize: 35, color: '#2e7d32' }} />
+                        <div>
+                            <h1 className="text-xl md:text-2xl font-bold text-[#5A0E24] mb-1">
+                                Order placed, thank you!
+                            </h1>
+                            <p className="text-sm text-gray-600">
+                                Confirmation will be sent to your email shortly.
+                            </p>
                         </div>
                     </div>
 
-                    <h1 className="text-3xl font-light tracking-[0.2em] mb-4 uppercase">
-                        Order <span className="text-[#D4AF37]">Confirmed</span>
-                    </h1>
-                    
-                    <p className="text-gray-400 text-sm leading-relaxed mb-8">
-                        Thank you for your purchase. Your payment was successful and your luxury pieces are now being prepared for delivery.
-                    </p>
-
-                    <div className="bg-black border border-gray-900 py-4 px-4 mb-10">
-                        <span className="text-[10px] text-gray-500 uppercase tracking-widest block mb-2">
-                            Transaction Reference
-                        </span>
-                        <span className="text-[#D4AF37] font-mono text-xs break-all tracking-wider">
-                            {reference || "PROCESSED"}
-                        </span>
+                    {/* Order Details Grid */}
+                    <div className="border-t border-b border-gray-100 py-6 mb-8 flex flex-col sm:flex-row gap-8">
+                        <div>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-tight mb-1">Shipping to:</p>
+                            <p className="text-sm font-semibold">{shippingInfo?.address}</p>
+                            <p className="text-sm text-gray-600">{shippingInfo?.city}, {shippingInfo?.pinCode}</p>
+                        </div>
+                        <div>
+                            <p className="text-xs font-bold text-gray-500 uppercase tracking-tight mb-1">Transaction ID:</p>
+                            <p className="text-sm font-mono text-[#67B2D8] break-all">{reference || "PROCESSED_SUCCESSFULLY"}</p>
+                        </div>
                     </div>
 
-                    <div className="flex flex-col gap-4">
+                    <div className="bg-[#fcf8f3] border border-[#f5ead2] p-4 rounded-md mb-8">
+                        <p className="text-[13px] text-gray-700 leading-relaxed">
+                            <span className="font-bold text-[#76153C]">Preparation in progress:</span> Your premium items are being inspected and packed. You can track your shipment status in your account.
+                        </p>
+                    </div>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-3">
                         <Link 
                             to="/orders/user" 
-                            className="bg-[#D4AF37] text-black font-bold py-4 uppercase tracking-[0.2em] text-[10px] hover:bg-white transition-all duration-500 flex items-center justify-center gap-2"
+                            className="flex-1 bg-[#BF124D] text-white font-medium py-2 rounded-lg hover:bg-[#76153C] transition shadow-sm text-center text-sm flex items-center justify-center gap-2"
                         >
-                            <ReceiptLong fontSize="small" /> View My Orders
+                            <ReceiptLong fontSize="small" /> Review your orders
                         </Link>
 
                         <Link 
                             to="/products" 
-                            className="border border-gray-800 text-gray-400 font-bold py-4 uppercase tracking-[0.2em] text-[10px] hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all duration-500 flex items-center justify-center gap-2"
+                            className="flex-1 bg-white border border-gray-300 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-50 transition text-center text-sm flex items-center justify-center gap-2"
                         >
-                            <ShoppingBag fontSize="small" /> Return to Shop
+                            <ShoppingBag fontSize="small" /> Continue shopping
                         </Link>
                     </div>
+
+                    <div className="mt-10 pt-6 border-t border-gray-100">
+                        <p className="text-xs text-center text-gray-400">
+                            Need help? Visit our <span className="text-[#67B2D8] hover:underline cursor-pointer">Help Section</span> or contact support.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Tracking Promo */}
+                <div className="mt-8 text-center max-w-md">
+                    <p className="text-sm text-gray-500">
+                        Check your <span className="text-[#67B2D8] hover:underline cursor-pointer font-medium">Order History</span> for real-time delivery updates and invoices.
+                    </p>
                 </div>
             </div>
 

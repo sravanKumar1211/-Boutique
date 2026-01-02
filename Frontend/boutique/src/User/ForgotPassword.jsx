@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react'
 import PageTitle from '../components/PageTitle'
 import Navbar from '../components/Navbar'
@@ -14,10 +13,8 @@ function ForgotPassword() {
 
     const ForgotPasswordEmail = (e) => {
         e.preventDefault()
-        
         const myForm = new FormData()
         myForm.set('email', email)
-        
         dispatch(forgotPassword(myForm))
         setEmail('')
     }
@@ -38,48 +35,58 @@ function ForgotPassword() {
             <PageTitle title='Forgot Password' />
             <Navbar />
 
-            <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
-                <div className="max-w-md w-full bg-[#111] p-8 rounded-lg border border-[#6D1A36] shadow-2xl">
+            <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+                <div className="max-w-md w-full border border-[#76153C]/30 rounded-md p-8">
                     
-                    {/* Header Section */}
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-[#D4AF37] tracking-widest uppercase">
-                            Recover Password
+                    {/* Header */}
+                    <div className="mb-6">
+                        <h2 className="text-xl font-semibold text-black">
+                            Password assistance
                         </h2>
-                        <div className="h-1 w-20 bg-[#6D1A36] mx-auto mt-2"></div>
-                        <p className="text-gray-500 text-[10px] uppercase tracking-widest mt-6">
-                            Enter your registered email below
+                        <p className="text-sm text-gray-600 mt-2">
+                            Enter the email address associated with your account.
                         </p>
                     </div>
 
-                    <form onSubmit={ForgotPasswordEmail} className="space-y-6">
-                        {/* Email Input */}
+                    <form onSubmit={ForgotPasswordEmail} className="space-y-5">
+                        
+                        {/* Email */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">
-                                Registered Email
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Email
                             </label>
                             <input 
                                 type="email" 
-                                placeholder='Enter your Registered Email' 
+                                placeholder="Enter your email"
                                 required
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300 placeholder:text-gray-700"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="w-full px-3 py-2 border border-gray-300 rounded 
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8] 
+                                           focus:border-[#67B2D8] text-sm"
                             />
                         </div>
 
-                        {/* Submit Button - Loading checks removed */}
+                        {/* Submit */}
                         <button 
                             type="submit"
-                            className="w-full py-3 bg-[#D4AF37] text-black font-bold uppercase tracking-widest rounded hover:bg-[#b8962d] transition duration-300 shadow-lg shadow-[#D4AF37]/10 active:scale-95"
+                            className="w-full py-2.5 bg-[#67B2D8] text-black text-sm font-semibold rounded
+                                       hover:bg-[#BF124D] hover:text-white transition"
                         >
-                            Send Reset Link
+                            Continue
                         </button>
                     </form>
 
-                    <div className="mt-8 text-center">
-                        <a href="/login" className="text-gray-400 hover:text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] transition duration-300">
-                            Back to Login
+                    {/* Divider */}
+                    <div className="my-6 border-t border-[#76153C]/20"></div>
+
+                    {/* Back */}
+                    <div className="text-center">
+                        <a
+                            href="/login"
+                            className="text-xs text-[#67B2D8] hover:underline"
+                        >
+                            Back to sign in
                         </a>
                     </div>
                 </div>

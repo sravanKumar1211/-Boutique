@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -20,14 +19,12 @@ function UpdatePassword() {
 
     const updatePasswordSubmit = (e) => {
         e.preventDefault();
-        
-        // Validation
+
         if (newPassword !== confirmPassword) {
             toast.error("Passwords do not match");
             return;
         }
 
-        // We send a regular object since it's just JSON data
         const myForm = {
             oldPassword,
             newPassword,
@@ -54,72 +51,82 @@ function UpdatePassword() {
         <>
             <PageTitle title="Update Password" />
             <Navbar />
-            
-            <div className="min-h-screen bg-black flex items-center justify-center px-4 py-12">
-                <div className="max-w-md w-full bg-[#111] p-8 rounded-lg border border-[#6D1A36] shadow-2xl">
-                    
-                    {/* Header */}
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-bold text-[#D4AF37] tracking-widest uppercase">
-                            Update Password
-                        </h2>
-                        <div className="h-1 w-20 bg-[#6D1A36] mx-auto mt-2"></div>
-                    </div>
 
-                    <form className="space-y-6" onSubmit={updatePasswordSubmit}>
-                        
+            <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+                <div className="max-w-sm w-full border border-[#76153C]/30 rounded-md p-6">
+
+                    {/* Header */}
+                    <h2 className="text-xl font-semibold text-black mb-2">
+                        Change your password
+                    </h2>
+                    <p className="text-sm text-gray-600 mb-6">
+                        Enter your current password and choose a new one.
+                    </p>
+
+                    <form className="space-y-4" onSubmit={updatePasswordSubmit}>
+
                         {/* Old Password */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">
-                                Old Password
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Current password
                             </label>
-                            <input 
-                                type="password" 
-                                placeholder="Enter Old Password"
+                            <input
+                                type="password"
                                 required
-                                value={oldPassword} 
+                                value={oldPassword}
                                 onChange={(e) => setOldPassword(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300"
+                                placeholder="Current password"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
                         {/* New Password */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">
-                                New Password
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                New password
                             </label>
-                            <input 
-                                type="password" 
-                                placeholder="Enter New Password"
+                            <input
+                                type="password"
                                 required
-                                value={newPassword} 
+                                value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300"
+                                placeholder="New password"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
                         {/* Confirm Password */}
                         <div>
-                            <label className="block text-[#D4AF37] text-[10px] uppercase tracking-[0.2em] mb-2">
-                                Confirm New Password
+                            <label className="block text-xs font-semibold text-gray-700 mb-1">
+                                Re-enter new password
                             </label>
-                            <input 
-                                type="password" 
-                                placeholder="Confirm New Password"
+                            <input
+                                type="password"
                                 required
-                                value={confirmPassword} 
+                                value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
-                                className="w-full px-4 py-3 bg-black border border-gray-800 text-white rounded focus:border-[#D4AF37] outline-none transition duration-300"
+                                placeholder="Confirm new password"
+                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded
+                                           focus:outline-none focus:ring-1 focus:ring-[#67B2D8]
+                                           focus:border-[#67B2D8]"
                             />
                         </div>
 
-                        {/* Submit Button */}
-                        <button 
+                        {/* Submit */}
+                        <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full py-3 bg-[#D4AF37] text-black font-bold uppercase tracking-widest rounded hover:bg-[#b8962d] transition duration-300 shadow-lg shadow-[#D4AF37]/10 ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+                            className={`w-full py-2.5 text-sm font-semibold rounded transition
+                            ${loading
+                                ? "bg-gray-300 cursor-not-allowed"
+                                : "bg-[#67B2D8] hover:bg-[#BF124D] hover:text-white text-black"
+                            }`}
                         >
-                            {loading ? "Processing..." : "Change Password"}
+                            {loading ? "Updating..." : "Save changes"}
                         </button>
                     </form>
                 </div>
