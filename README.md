@@ -1,32 +1,236 @@
-# -Boutique
+🛍️ Luxury Silk & Jewelry online sales Platform
 
-🛍️ Luxury Silk & Jewelry E-Commerce PlatformA high-performance, full-stack e-commerce solution tailored for luxury retail. This platform integrates secure payments, automated communications, and a robust administrative suite for total inventory control.🚀 Core Technologies & Integration💳 Payment Gateway: RazorpayThe platform features a seamless checkout experience using the Razorpay API.Secure Transactions: Uses RSA encryption for data safety.Order Creation: Backend generates a unique Order ID for every transaction to prevent double-billing.Webhook Verification: Implements signature verification to ensure payments are authentic before updating order status in the database.☁️ Media Management: CloudinaryAll product imagery is managed via Cloudinary's professional-grade CDN.Dynamic Resizing: Automatically serves optimized images based on user device.Storage Efficiency: The backend logic ensures "Orphaned Images" are deleted from the cloud when a product is removed.Base64 Support: Handles seamless uploads directly from the Admin dashboard.📧 Communication: NodemailerAutomated email triggers keep users informed throughout their journey.Order Receipts: Professional HTML emails sent upon successful Razorpay payment.Account Security: Sends secure reset tokens for "Forgot Password" functionality.Admin Alerts: Optional notifications for low stock or new high-value orders.📦 Features & Functionalities👤 Customer ExperienceAdvanced Product Discovery: Server-side search, category filtering, and price-range sliders.Dynamic Pagination: Smooth navigation through large inventories using a custom-built pagination component.Intelligent Reviews: Authenticated users can rate and review products. The system automatically calculates the average rating ($\text{Ratings} = \frac{\sum \text{review ratings}}{\text{total reviews}}$).Persistent Cart: State-driven shopping cart that tracks product quantity and availability.🖥️ Admin Dashboard (The Control Center)The Admin Panel provides a full overview of the business health:Inventory Management: * Live Stock Tracking: Visual indicators (Green/Red) to highlight stock health.Full CRUD: Comprehensive interface to Create, Read, Update, and Delete products.Image Management: Integrated Cloudinary interface to upload and manage product visuals.User Oversight: View and manage user accounts and their order history.📂 Project StructurePlaintext├── backend/
-│   ├── controllers/        # Business logic (Razorpay, Cloudinary, Products)
-│   ├── middleware/         # Auth, Global Error Handling
-│   ├── models/             # Mongoose Schemas (Product, User, Order)
-│   ├── utils/              # API Features, Nodemailer config
+A high-performance full-stack online sales platform tailored for luxury silk and jewelry retail.
+Built with scalability, security, and real-world production use in mind.
+
+This platform integrates secure payments, automated communications, and a powerful admin dashboard for complete inventory and order control.
+
+🚀 Tech Stack Overview
+Layer	Technology
+Frontend	React, Redux Toolkit, Tailwind / MUI
+Backend	Node.js, Express.js
+Database	MongoDB + Mongoose
+Payments	Razorpay
+Media CDN	Cloudinary
+Emails	Nodemailer
+Auth	JWT (JSON Web Tokens)
+💳 Payment Gateway – Razorpay
+
+A secure and seamless checkout experience powered by Razorpay API.
+
+Key Implementations
+
+🔐 Secure Transactions using RSA encryption
+
+🧾 Unique Order ID generation on backend to prevent double billing
+
+🔄 Webhook Signature Verification to validate payment authenticity
+
+✅ Order status is updated only after verified payment
+
+☁️ Media Management – Cloudinary
+
+All product images are managed through Cloudinary CDN for performance and reliability.
+
+Features
+
+📱 Dynamic Image Resizing based on device
+
+🗑️ Automatic deletion of orphaned images when products are removed
+
+⚡ Optimized delivery via CDN
+
+📤 Base64 image upload support from Admin dashboard
+
+📧 Communication System – Nodemailer
+
+Automated email notifications keep both users and admins informed.
+
+Email Triggers
+
+📦 Order confirmation & payment receipts (HTML templates)
+
+🔐 Secure Forgot Password reset emails
+
+🛎️ Admin alerts (low stock / high-value orders)
+
+📦 Core Features
+👤 Customer Experience
+
+🔍 Advanced Product Search (server-side)
+
+🗂️ Category filtering & price range sliders
+
+📄 Dynamic Pagination for large inventories
+
+⭐ Authenticated Reviews & Ratings
+
+Average Rating
+=
+∑
+Review Ratings
+Total Reviews
+Average Rating=
+Total Reviews
+∑Review Ratings
+	​
+
+
+🛒 Persistent Cart with quantity & stock validation
+
+🖥️ Admin Dashboard (Control Center)
+
+A centralized panel to manage the entire business.
+
+Inventory Management
+
+📊 Live stock indicators (🟢 In Stock / 🔴 Low Stock)
+
+✏️ Full CRUD operations for products
+
+🖼️ Integrated Cloudinary image management
+
+User Management
+
+👥 View all users
+
+📦 Track user order history
+
+🔐 Role-based access control (Admin / User)
+
+📂 Project Folder Structure
+
+luxury-ecommerce/
+├── backend/
+│   ├── controllers/        # Business logic (Products, Orders, Razorpay, Cloudinary)
+│   ├── middleware/         # Auth, Error Handling, Async Wrapper
+│   ├── models/             # Mongoose Schemas (User, Product, Order)
+│   ├── routes/             # API Routes
+│   ├── utils/              # API Features, Nodemailer Config
+│   ├── config/             # Database & Environment Config
 │   └── server.js           # Server Entry Point
+│
 ├── frontend/
 │   ├── src/
-│   │   ├── features/       # Redux Slices (adminSlice, productSlice)
-│   │   ├── components/     # UI Kits (Pagination, Navbar, PageTitle)
-│   │   ├── pages/          # View Logic (ProductsList, CreateProduct)
-│   │   └── store.js        # Global Redux Store
-🛠️ InstallationClone the Repo:Bashgit clone https://github.com/yourusername/luxury-ecommerce.git
-Environment Setup:Create a .env file in the backend directory:Code snippetPORT=4000
+│   │   ├── features/       # Redux Slices (productSlice, adminSlice, cartSlice)
+│   │   ├── components/     # Reusable UI Components (Navbar, Pagination)
+│   │   ├── pages/          # Page Views (ProductList, ProductDetails, Admin)
+│   │   ├── utils/          # Helper Functions
+│   │   ├── store.js        # Redux Store
+│   │   └── main.jsx        # App Entry
+│
+└── README.md
+
+🛠️ Installation & Setup
+1️⃣ Clone the Repository
+git clone https://github.com/sravanKumar1211/-Boutique
+
+2️⃣ Backend Environment Setup
+
+Create a .env file inside the backend folder:
+
+PORT=4000
 MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret
-CLOUDINARY_NAME=your_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
+JWT_SECRET=your_jwt_secret
+
+CLOUDINARY_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+
 RAZORPAY_KEY_ID=your_razorpay_id
 RAZORPAY_KEY_SECRET=your_razorpay_secret
+
 SMTP_SERVICE=gmail
 SMTP_MAIL=your_email@gmail.com
 SMTP_PASSWORD=your_app_password
-Install & Run:Bash# Backend
-cd backend && npm install && npm start
 
-# Frontend
-cd frontend && npm install && npm run dev
-🛡️ Production ReadinessError Handling: A custom HandleError class ensures that all API errors return consistent JSON responses, preventing frontend crashes.Data Validation: Mongoose schemas enforce strict rules on price, stock limits, and mandatory image uploads.Async Safety: All controllers are wrapped in a handleAsyncError utility to catch and pass potential server crashes to the global error middleware.
+3️⃣ Install Dependencies & Run
+Backend
+cd backend
+npm install
+npm start
+
+Frontend
+cd frontend
+npm install
+npm run dev
+
+
+🛡️ Production Readiness
+✅ Error Handling
+
+
+Centralized HandleError class
+
+
+Consistent JSON error responses
+
+
+Prevents frontend crashes
+
+
+✅ Async Safety
+
+
+All controllers wrapped using handleAsyncError
+
+
+Prevents unhandled promise rejections
+
+
+✅ Data Validation
+
+
+Strict Mongoose schema rules
+
+
+Price, stock limits & mandatory image checks
+
+
+✅ Security
+
+
+JWT authentication
+
+
+Razorpay webhook signature verification
+
+
+Secure password hashing & reset tokens
+
+
+
+📌 Ideal Use Case
+
+
+Luxury Silk Boutiques
+
+
+Jewelry Stores
+
+
+Single-Vendor or Admin-Managed E-Commerce
+
+
+Production-grade MERN projects for portfolios
+
+
+
+If you want, I can also:
+
+
+✅ Add deployment steps (AWS / Vercel / Render)
+
+
+✅ Create API documentation
+
+
+✅ Optimize README for recruiter / portfolio impact
+
+
+✅ Convert this into a professional GitHub showcase
+
+
+By G Savan Kumar
+
+git clone https://github.com/sravanKumar1211/-Boutique
