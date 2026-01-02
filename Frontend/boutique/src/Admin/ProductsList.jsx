@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import PageTitle from '../components/PageTitle';
@@ -13,6 +12,12 @@ function ProductsList() {
     const dispatch = useDispatch();
     const { products, loading, error, success, deleteLoading } = useSelector(state => state.admin);
 
+    // FIX 1: Initial Load Only
+    useEffect(() => {
+        dispatch(fetchAdminProducts());
+    }, [dispatch]);
+
+    // FIX 2: Handle Success/Error separately to avoid infinite loops
     useEffect(() => {
         if (error) {
             toast.error(error);
@@ -20,11 +25,10 @@ function ProductsList() {
         }
 
         if (success) {
-            toast.success("Product Deleted Successfully");
+            toast.success("Action Successful");
             dispatch(removeSuccess());
+            dispatch(fetchAdminProducts()); // Refresh list after delete/update
         }
-
-        dispatch(fetchAdminProducts());
     }, [dispatch, error, success]);
 
     const deleteHandler = (id) => {
@@ -78,14 +82,15 @@ function ProductsList() {
                                         <td className="p-4 text-xs text-gray-500">{index + 1}</td>
                                         <td className="p-4">
                                             <img 
-                                                src={item.images && item.images[0] ? item.images[0].url : 'https://via.placeholder.com/150'} 
+                                                /* FIX 3: Changed item.images to item.image */
+                                                src={item.image && item.image[0] ? item.image[0].url : 'https://via.placeholder.com/150'} 
                                                 alt={item.name} 
                                                 className="w-12 h-12 object-cover rounded border border-gray-800" 
                                                 onError={(e) => { e.target.src = 'https://via.placeholder.com/150' }} 
                                             />
                                         </td>
                                         <td className="p-4 text-sm font-medium">{item.name}</td>
-                                        <td className="p-4 text-sm text-[#D4AF37]">₹{item.price.toLocaleString()}</td>
+                                        <td className="p-4 text-sm text-[#D4AF37]">₹{item.price?.toLocaleString()}</td>
                                         <td className="p-4">
                                             <span className={`text-[10px] px-2 py-1 rounded ${item.stock < 10 ? 'bg-red-500/10 text-red-500' : 'bg-green-500/10 text-green-500'}`}>
                                                 {item.stock} in stock
