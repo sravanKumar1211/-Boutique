@@ -18,7 +18,6 @@ export const createProduct = createAsyncThunk(
     'admin/createProduct',
     async (productData, { rejectWithValue }) => {
         try {
-            
             const config = { headers: { 'Content-Type': 'application/json' } };
             const { data } = await axios.post('/api/v1/admin/product/create', productData, config);
             return data;
@@ -28,33 +27,27 @@ export const createProduct = createAsyncThunk(
     }
 );
 
-//Update product
-
-// export const updateProduct = createAsyncThunk(
-//     'admin/updateProduct',
-//     async ({id,formData}, { rejectWithValue }) => {
-//         try {
-//             const config = { headers: { 'Content-Type': 'multipart/fom-data' } };
-//             const { data } = await axios.put(`/api/v1/admin/product/${id}`, formData, config);
-//             return data;
-//         } catch (error) {
-//             return rejectWithValue(error.response?.data?.message || 'Error While Updating Product');
-//         }
-//     }
-// );
-
-
-// Update product
 export const updateProduct = createAsyncThunk(
     'admin/updateProduct',
-    async ({ updateId, productData }, { rejectWithValue }) => { // renamed formData to productData for clarity
+    async ({ updateId, productData }, { rejectWithValue }) => {
         try {
-            // Using application/json because we are sending Base64 arrays
             const config = { headers: { 'Content-Type': 'application/json' } };
             const { data } = await axios.put(`/api/v1/admin/product/${updateId}`, productData, config);
             return data;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Error While Updating Product');
+        }
+    }
+);
+
+export const deleteProduct = createAsyncThunk(
+    'admin/deleteProduct',
+    async (productId, { rejectWithValue }) => { 
+        try {
+            const { data } = await axios.delete(`/api/v1/admin/product/${productId}`);
+            return { productId, data };
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || 'Error While deleting Product');
         }
     }
 );
@@ -66,7 +59,8 @@ const adminSlice = createSlice({
         success: false,
         loading: false,
         error: null,
-        product: {} 
+        product: {},
+        deleteLoading: false 
     },
     reducers: {
         removeErrors: (state) => {
@@ -78,7 +72,6 @@ const adminSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            // Fetch Admin Products
             .addCase(fetchAdminProducts.pending, (state) => {
                 state.loading = true;
             })
@@ -90,7 +83,6 @@ const adminSlice = createSlice({
                 state.loading = false;
                 state.error = action.payload;
             })
-            // Create Product
             .addCase(createProduct.pending, (state) => {
                 state.loading = true;
             })
@@ -98,17 +90,13 @@ const adminSlice = createSlice({
                 state.loading = false;
                 state.success = action.payload.success;
                 state.product = action.payload.product;
-                // Add to the list so the UI updates without a refresh
                 state.products.push(action.payload.product);
             })
             .addCase(createProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
-
-            //Update product
-
-             .addCase(updateProduct.pending, (state) => {
+            .addCase(updateProduct.pending, (state) => {
                 state.loading = true;
             })
             .addCase(updateProduct.fulfilled, (state, action) => {
@@ -119,7 +107,20 @@ const adminSlice = createSlice({
             .addCase(updateProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-            });
+            })
+            .addCase(deleteProduct.pending, (state) => {
+                state.deleteLoading = true;
+            })
+            .addCase(deleteProduct.fulfilled, (state, action) => {
+                state.deleteLoading = false;
+                state.success = action.payload.data.success;
+                // Fix: Filter state.products directly using productId
+                state.products = state.products.filter(product => product._id !== action.payload.productId);
+            })
+            .addCase(deleteProduct.rejected, (state, action) => {
+                state.deleteLoading = false;
+                state.error = action.payload;
+            })
     }
 });
 

@@ -1,29 +1,35 @@
+
 import React, { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import PageTitle from '../components/PageTitle';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAdminProducts, removeErrors } from '../features/admin/adminSlice';
-import { Edit, Delete, Inventory, ReceiptLong } from '@mui/icons-material';
+import { fetchAdminProducts, removeErrors, deleteProduct, removeSuccess } from '../features/admin/adminSlice';
+import { Edit, Delete, Inventory } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 function ProductsList() {
     const dispatch = useDispatch();
-    const { products, loading, error } = useSelector(state => state.admin);
+    const { products, loading, error, success, deleteLoading } = useSelector(state => state.admin);
 
     useEffect(() => {
         if (error) {
             toast.error(error);
             dispatch(removeErrors());
         }
+
+        if (success) {
+            toast.success("Product Deleted Successfully");
+            dispatch(removeSuccess());
+        }
+
         dispatch(fetchAdminProducts());
-    }, [dispatch, error]);
+    }, [dispatch, error, success]);
 
     const deleteHandler = (id) => {
-        // You will implement this action later
         if(window.confirm("Are you sure you want to delete this product?")) {
-            console.log("Delete product:", id);
+            dispatch(deleteProduct(id));
         }
     };
 
@@ -48,7 +54,7 @@ function ProductsList() {
                     </Link>
                 </div>
 
-                {loading ? (
+                {loading || deleteLoading ? (
                     <div className="flex justify-center py-20">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#D4AF37]"></div>
                     </div>
@@ -72,13 +78,11 @@ function ProductsList() {
                                         <td className="p-4 text-xs text-gray-500">{index + 1}</td>
                                         <td className="p-4">
                                             <img 
-                                                    // Use optional chaining (?.) and check if the first image exists
-                                                    src={item.images && item.images[0] ? item.images[0].url : '/path-to-placeholder.jpg'} 
-                                                    alt={item.name} 
-                                                    className="w-12 h-12 object-cover rounded border border-gray-800" 
-                                                    // Handle broken image links
-                                                    onError={(e) => { e.target.src = 'https://via.placeholder.com/150' }} 
-                                                />
+                                                src={item.images && item.images[0] ? item.images[0].url : 'https://via.placeholder.com/150'} 
+                                                alt={item.name} 
+                                                className="w-12 h-12 object-cover rounded border border-gray-800" 
+                                                onError={(e) => { e.target.src = 'https://via.placeholder.com/150' }} 
+                                            />
                                         </td>
                                         <td className="p-4 text-sm font-medium">{item.name}</td>
                                         <td className="p-4 text-sm text-[#D4AF37]">₹{item.price.toLocaleString()}</td>
@@ -98,7 +102,8 @@ function ProductsList() {
                                                 </Link>
                                                 <button 
                                                     onClick={() => deleteHandler(item._id)}
-                                                    className="text-gray-400 hover:text-red-500 transition-colors"
+                                                    disabled={deleteLoading}
+                                                    className="text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
                                                 >
                                                     <Delete sx={{ fontSize: 18 }} />
                                                 </button>
