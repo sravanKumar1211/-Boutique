@@ -1,8 +1,12 @@
+
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// This is required for cookies/sessions to work through the proxy
+axios.defaults.withCredentials = true;
 
-// ... (register, login, loadUser, logout, updateProfile thunks remain exactly the same)
+/* --- THUNKS (Exactly as per your original schema) --- */
+
 export const register=createAsyncThunk('user/register',async(userData,{rejectWithValue})=>{
     try{
         const config={ headers:{ 'Content-Type':'multipart/form-data' } }
@@ -85,7 +89,7 @@ const userSlice=createSlice({
     name:'user',
     initialState:{
         user:localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null,
-        loading:true,
+        loading: false, // Changed to false so refresh doesn't hang
         error:null,
         success:false,
         isAuthenticated:localStorage.getItem('isAuthenticated')==='true',
@@ -100,18 +104,17 @@ const userSlice=createSlice({
         }
     },
     extraReducers:(builder)=>{
-        builder.addCase(register.pending,(state)=>{
+        builder
+        .addCase(register.pending,(state)=>{
             state.loading=true;
             state.error=null;
         })
         .addCase(register.fulfilled,(state,action)=>{
             state.loading=false; 
-            state.error=null;
-            state.success=action.payload.success;
-            state.user=action.payload?.user || null;
-            state.isAuthenticated=Boolean(action.payload?.user);
+            state.user=action.payload?.user;
+            state.isAuthenticated=true;
             localStorage.setItem('user',JSON.stringify(state.user))
-            localStorage.setItem('isAuthenticated',JSON.stringify(state.isAuthenticated))
+            localStorage.setItem('isAuthenticated','true')
         })
         .addCase(register.rejected,(state,action)=>{
             state.loading=false;
@@ -124,13 +127,11 @@ const userSlice=createSlice({
             state.error=null;
         })
         .addCase(login.fulfilled,(state,action)=>{
-            state.loading=false; // FIXED: was true
-            state.error=null;
-            state.success=action.payload.success;
-            state.user=action.payload?.user || null;
-            state.isAuthenticated=Boolean(action.payload?.user);
+            state.loading=false;
+            state.user=action.payload?.user;
+            state.isAuthenticated=true;
             localStorage.setItem('user',JSON.stringify(state.user))
-            localStorage.setItem('isAuthenticated',JSON.stringify(state.isAuthenticated))
+            localStorage.setItem('isAuthenticated','true')
         })
         .addCase(login.rejected,(state,action)=>{
             state.loading=false;
@@ -139,21 +140,18 @@ const userSlice=createSlice({
 
          builder.addCase(loadUser.pending,(state)=>{
             state.loading=true;
-            state.error=null;
         })
         .addCase(loadUser.fulfilled,(state,action)=>{
             state.loading=false;
-            state.error=null;
-            state.user=action.payload?.user || null;
-            state.isAuthenticated=Boolean(action.payload?.user);
+            state.user=action.payload?.user;
+            state.isAuthenticated=true;
             localStorage.setItem('user',JSON.stringify(state.user))
-            localStorage.setItem('isAuthenticated',JSON.stringify(state.isAuthenticated))
+            localStorage.setItem('isAuthenticated','true')
         })
         .addCase(loadUser.rejected,(state,action)=>{
             state.loading=false;
-            state.user=null;
-            state.isAuthenticated=false;
-            if(action.payload?.statusCode===401){
+            // Background sync: If session is actually dead, clear storage
+            if(action.payload?.statusCode === 401) {
                 state.user=null;
                 state.isAuthenticated=false;
                 localStorage.removeItem('user')
@@ -168,66 +166,40 @@ const userSlice=createSlice({
             localStorage.removeItem('user')
             localStorage.removeItem('isAuthenticated')
         })
-        //UpdateUser Profile
+
          builder.addCase(updateProfile.pending,(state)=>{
             state.loading=true;
-            state.error=null;
         })
         .addCase(updateProfile.fulfilled,(state,action)=>{
-            state.loading=false; // This ensures the button re-enables
-            state.error=null;
-            state.user=action.payload?.user|| state.user; // Keep existing user if update returns partial
+            state.loading=false;
+            state.user=action.payload?.user|| state.user;
             state.success=action.payload?.success;
-            state.message=action.payload?.message;
+            localStorage.setItem('user',JSON.stringify(state.user))
         })
         .addCase(updateProfile.rejected,(state,action)=>{
             state.loading=false; 
             state.error=action.payload?.message || 'UpdateProfile failed.';
         })
-        //Update User Pssword
-        builder.addCase(updatePassword.pending,(state)=>{
-            state.loading=true;
-            state.error=null;
-        })
-        .addCase(updatePassword.fulfilled,(state,action)=>{
+
+        builder.addCase(updatePassword.fulfilled,(state,action)=>{
             state.loading=false; 
-            state.error=null;
             state.success=action.payload?.success;
         })
         .addCase(updatePassword.rejected,(state,action)=>{
             state.loading=false; 
             state.error=action.payload?.message || 'UpdatePassword failed.';
         })
-        //forgot Password
-        builder.addCase(forgotPassword.pending,(state)=>{
-            state.loading=true;
-            state.error=null;
-        })
-        .addCase(forgotPassword.fulfilled,(state,action)=>{
+
+        builder.addCase(forgotPassword.fulfilled,(state,action)=>{
             state.loading=false; 
-            state.error=null;
-            state.success=action.payload?.success;
             state.message=action.payload?.message;
         })
-        .addCase(forgotPassword.rejected,(state,action)=>{
+
+        builder.addCase(resetPassword.fulfilled,(state,action)=>{
             state.loading=false; 
-            state.error=action.payload?.message || 'EmailSent failed.';
-        })
-        //Reset Password
-           builder.addCase(resetPassword.pending,(state)=>{
-            state.loading=true;
-            state.error=null;
-        })
-        .addCase(resetPassword.fulfilled,(state,action)=>{
-            state.loading=false; 
-            state.error=null;
             state.success=action.payload?.success;
             state.user=null;
             state.isAuthenticated=false
-        })
-        .addCase(resetPassword.rejected,(state,action)=>{
-            state.loading=false; 
-            state.error=action.payload?.message || 'ResetPassword failed.';
         })
     }
 })

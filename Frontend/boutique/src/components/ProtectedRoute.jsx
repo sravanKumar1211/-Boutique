@@ -1,23 +1,26 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import Loader from '../components/Loader'
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
+import Loader from './Loader';
 
-function ProtectedRoute({ element }) {
-    const { isAuthenticated, loading } = useSelector(state => state.user);
+function ProtectedRoute({ element, isAdmin }) {
+    const { isAuthenticated, loading, user } = useSelector(state => state.user);
 
-    // 1. If Redux is still fetching the user data, show Loader
+    // If loading is true, we ARE still checking the cookie/token.
+    // We MUST return the loader here and NOT the Navigate component.
     if (loading) {
-        return <Loader />
+        return <Loader />; 
     }
 
-    // 2. Once loading is finished, if NOT authenticated, go to login
-    if (isAuthenticated === false) {
-        return <Navigate to='/login' />
+    if (!isAuthenticated) {
+        return <Navigate to="/login" />;
     }
 
-    // 3. If loading is finished and authenticated is true, show the component
+    if (isAdmin && user?.role !== 'admin') {
+        return <Navigate to="/login" />;
+    }
+
     return element;
 }
 
-export default ProtectedRoute
+export default ProtectedRoute;
