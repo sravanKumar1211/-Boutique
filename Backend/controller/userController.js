@@ -7,26 +7,67 @@ import crypto from 'crypto'
 import { v2 as cloudinary } from 'cloudinary';
 
 // Register User
+// export const registerUser = handleAsyncError(async (req, res, next) => {
+//     const { name, email, password, avatar } = req.body;
+    
+//     const myCloud = await cloudinary.uploader.upload(avatar, {
+//         folder: 'avatars',
+//         width: 150,
+//         crop: 'scale'
+//     });
+
+//     const user = await User.create({
+//         name,
+//         email,
+//         password,
+//         avatar: {
+//             public_id: myCloud.public_id,
+//             url: myCloud.secure_url
+//         }
+//     });
+
+//     sendToken(user, 200, res);
+// });
+
+
+
+
 export const registerUser = handleAsyncError(async (req, res, next) => {
     const { name, email, password, avatar } = req.body;
-    
-    const myCloud = await cloudinary.uploader.upload(avatar, {
-        folder: 'avatars',
-        width: 150,
-        crop: 'scale'
-    });
+
+    // Start with a null-safe object
+    let avatarData = {
+        public_id: `default_${Date.now()}`, // Unique ID to avoid "unique" index errors
+        url: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`
+    };
+
+    // Check if avatar is a valid base64 string
+    if (avatar && typeof avatar === "string" && avatar.startsWith("data:image")) {
+        try {
+            const myCloud = await cloudinary.uploader.upload(avatar, {
+                folder: 'avatars',
+                width: 150,
+                crop: 'scale'
+            });
+
+            avatarData = {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url
+            };
+        } catch (cloudinaryError) {
+            console.error("Cloudinary Upload Error:", cloudinaryError);
+            // Fallback to initials if Cloudinary fails
+        }
+    }
 
     const user = await User.create({
         name,
         email,
         password,
-        avatar: {
-            public_id: myCloud.public_id,
-            url: myCloud.secure_url
-        }
+        avatar: avatarData
     });
 
-    sendToken(user, 200, res);
+    sendToken(user, 201, res);
 });
 
 // Login User
@@ -78,7 +119,8 @@ export const requestPasswordReset = handleAsyncError(async (req, res, next) => {
         return next(new HandleError("Could not save reset token, please try again later", 500));
     }
 
-    const resetPasswordURL = `http://localhost:5173/password/reset/${resetToken}`;
+   // const resetPasswordURL = `http://localhost:5173/password/reset/${resetToken}`;
+    const resetPasswordURL = `https://boutique-3pmv.onrender.com/password/reset/${resetToken}`;
     const message = `Use the following link to reset your password: ${resetPasswordURL}.\n\n This link will expire in 5 min.`;
 
     try {
