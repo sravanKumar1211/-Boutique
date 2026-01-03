@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.11.2",
     "@tailwindcss/vite": "^4.1.18",
     "axios": "^1.13.2",
+    "boutique": "file:../..",
     "cloudinary": "^2.8.0",
     "express-fileupload": "^1.5.2",
     "lucide-react": "^0.562.0",
