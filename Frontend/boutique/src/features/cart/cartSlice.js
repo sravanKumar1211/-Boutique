@@ -30,7 +30,7 @@ const cartSlice = createSlice({
         message: null,
         success:false,
         removingId:null,
-        shippingInfo:JSON.parse(localStorage.getItem('cartItems')) || []
+        shippingInfo:JSON.parse(sessionStorage.getItem('cartItems')) || []
     },
     reducers: {
         removeItemsFromCart: (state, action) => {
@@ -41,12 +41,12 @@ const cartSlice = createSlice({
         removeMessage: (state) => { state.message = null },
         saveShippingInfo:(state,action)=>{
             state.shippingInfo=action.payload
-            localStorage.setItem('shippingInfo',JSON.stringify(state.shippingInfo))
+            sessionStorage.setItem('shippingInfo',JSON.stringify(state.shippingInfo))
         },
         clearCart:(state)=>{
             state.cartItems=[];
             localStorage.removeItem('cartItems')
-            localStorage.removeItem('shippingInfo')
+            sessionStorage.removeItem('shippingInfo')
         }
 
     },

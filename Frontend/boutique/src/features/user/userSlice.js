@@ -1,11 +1,9 @@
-
 import {createSlice,createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
-// This is required for cookies/sessions to work through the proxy
 axios.defaults.withCredentials = true;
 
-/* --- THUNKS (Exactly as per your original schema) --- */
+/* --- THUNKS --- */
 
 export const register=createAsyncThunk('user/register',async(userData,{rejectWithValue})=>{
     try{
@@ -85,14 +83,28 @@ export const resetPassword=createAsyncThunk('user/resetPassword',async({token,us
     }
 })
 
+const getUserFromStorage = () => {
+  try {
+    const persistedUser = localStorage.getItem('user');
+    // Improved check to avoid "undefined" or "null" strings
+    if (!persistedUser || persistedUser === "undefined" || persistedUser === "null") return null; 
+
+    return JSON.parse(persistedUser);
+  } catch (error) {
+    console.error("Failed to parse user from localStorage:", error);
+    return null;
+  }
+};
+
 const userSlice=createSlice({
     name:'user',
     initialState:{
-        user:localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')):null,
-        loading: false, // Changed to false so refresh doesn't hang
+        user:getUserFromStorage(),
+        loading: false, 
         error:null,
         success:false,
-        isAuthenticated:localStorage.getItem('isAuthenticated')==='true',
+        // Double check: true ONLY if flag is 'true' AND user data exists
+        isAuthenticated: localStorage.getItem('isAuthenticated')==='true' && !!localStorage.getItem('user'),
         message:null
     },
     reducers:{
@@ -112,9 +124,12 @@ const userSlice=createSlice({
         .addCase(register.fulfilled,(state,action)=>{
             state.loading=false; 
             state.user=action.payload?.user;
-            state.isAuthenticated=true;
-            localStorage.setItem('user',JSON.stringify(state.user))
-            localStorage.setItem('isAuthenticated','true')
+            // Only save if user exists to avoid "undefined" in storage
+            if (state.user) {
+                state.isAuthenticated=true;
+                localStorage.setItem('user',JSON.stringify(state.user))
+                localStorage.setItem('isAuthenticated','true')
+            }
         })
         .addCase(register.rejected,(state,action)=>{
             state.loading=false;
@@ -129,9 +144,11 @@ const userSlice=createSlice({
         .addCase(login.fulfilled,(state,action)=>{
             state.loading=false;
             state.user=action.payload?.user;
-            state.isAuthenticated=true;
-            localStorage.setItem('user',JSON.stringify(state.user))
-            localStorage.setItem('isAuthenticated','true')
+            if (state.user) {
+                state.isAuthenticated=true;
+                localStorage.setItem('user',JSON.stringify(state.user))
+                localStorage.setItem('isAuthenticated','true')
+            }
         })
         .addCase(login.rejected,(state,action)=>{
             state.loading=false;
@@ -144,19 +161,24 @@ const userSlice=createSlice({
         .addCase(loadUser.fulfilled,(state,action)=>{
             state.loading=false;
             state.user=action.payload?.user;
-            state.isAuthenticated=true;
-            localStorage.setItem('user',JSON.stringify(state.user))
-            localStorage.setItem('isAuthenticated','true')
+            // Ensure we don't save a broken session
+            if (state.user) {
+                state.isAuthenticated=true;
+                localStorage.setItem('user',JSON.stringify(state.user))
+                localStorage.setItem('isAuthenticated','true')
+            } else {
+                state.isAuthenticated=false;
+                localStorage.removeItem('user');
+                localStorage.removeItem('isAuthenticated');
+            }
         })
         .addCase(loadUser.rejected,(state,action)=>{
             state.loading=false;
-            // Background sync: If session is actually dead, clear storage
-            if(action.payload?.statusCode === 401) {
-                state.user=null;
-                state.isAuthenticated=false;
-                localStorage.removeItem('user')
-                localStorage.removeItem('isAuthenticated')
-            }
+            // If load fails, we MUST clear storage to stop ghost login
+            state.user=null;
+            state.isAuthenticated=false;
+            localStorage.removeItem('user')
+            localStorage.removeItem('isAuthenticated')
         })
 
          builder.addCase(logout.fulfilled,(state)=>{
@@ -174,7 +196,10 @@ const userSlice=createSlice({
             state.loading=false;
             state.user=action.payload?.user|| state.user;
             state.success=action.payload?.success;
-            localStorage.setItem('user',JSON.stringify(state.user))
+            // Update storage with the fresh user data
+            if (state.user) {
+                localStorage.setItem('user',JSON.stringify(state.user))
+            }
         })
         .addCase(updateProfile.rejected,(state,action)=>{
             state.loading=false; 
@@ -199,7 +224,9 @@ const userSlice=createSlice({
             state.loading=false; 
             state.success=action.payload?.success;
             state.user=null;
-            state.isAuthenticated=false
+            state.isAuthenticated=false;
+            localStorage.removeItem('user');
+            localStorage.removeItem('isAuthenticated');
         })
     }
 })
