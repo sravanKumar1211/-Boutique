@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "backend/server.js",
+  "main": "Backend/server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev":"nodemon backend/server.js",
-    "build":"npm install && npm run build --prefix Frontend/boutique && npm run build --prefix Frontend/boutique"
+    "start": "node Backend/server.js",
+    "dev":"nodemon Backend/server.js",
+    "build":"npm install && npm run build --prefix Frontend/boutique && npm run build --prefix Frontend/boutique",
   },
   "keywords": [],
   "author": "",
