@@ -5,15 +5,18 @@ axios.defaults.withCredentials = true;
 
 /* --- THUNKS --- */
 
-export const register=createAsyncThunk('user/register',async(userData,{rejectWithValue})=>{
-    try{
-        const config={ headers:{ 'Content-Type':'multipart/form-data' } }
-        const {data}=await axios.post('/api/v1/register',userData,config)
-        return data
-    }catch(error){
-        return rejectWithValue(error.response?.data || 'Registration failed.')
-    }
-})
+
+export const register = createAsyncThunk('user/register', async (userData, { rejectWithValue }) => {
+  try {
+    const config = { headers: { 'Content-Type': 'application/json' } };
+    // Send the plain object (userData)
+    const { data } = await axios.post('/api/v1/register', userData, config);
+    return data;
+  } catch (error) {
+    // This will now catch the ACTUAL error message from your backend
+    return rejectWithValue(error.response?.data || 'Registration failed.');
+  }
+});
 
 export const login=createAsyncThunk('user/login',async({email,password},{rejectWithValue})=>{
     try{

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import PageTitle from '../components/PageTitle'
 import Footer from '../components/Footer'
@@ -78,27 +77,27 @@ function Products() {
             <Navbar />
 
             {loading ? <Loader /> : (
-                <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+                <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-grow">
                     
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
                         
-                        {/* Sidebar */}
+                        {/* Sidebar - Horizontal on Mobile, Vertical on Desktop */}
                         <aside className="md:col-span-1">
-                            <div className="sticky top-24 border border-gray-200 bg-white shadow-sm rounded-sm p-5">
-                                <h3 className="text-[#76153C] font-bold text-xs mb-5 tracking-[0.2em] uppercase border-b border-gray-100 pb-3">
+                            <div className="md:sticky md:top-24 border border-gray-200 bg-white shadow-sm rounded-sm p-5">
+                                <h3 className="text-[#76153C] font-bold text-xs mb-4 md:mb-5 tracking-[0.2em] uppercase border-b border-gray-100 pb-3 text-center md:text-left">
                                     Filter by Category
                                 </h3>
 
-                                <ul className="space-y-4">
+                                <ul className="flex flex-wrap md:flex-col gap-3 md:gap-4 justify-center md:justify-start">
                                     {Object.keys(categoryMap).map((displayCat) => (
                                         <li 
                                             key={displayCat}
                                             onClick={() => handleCategoryClick(displayCat)}
-                                            className={`text-sm cursor-pointer transition-all duration-200 flex items-center justify-between group
+                                            className={`text-sm cursor-pointer transition-all duration-200 flex items-center gap-2 md:justify-between px-3 py-1 md:px-0 md:py-0 border md:border-0 rounded-full md:rounded-none
                                             ${
                                                 category === categoryMap[displayCat]
-                                                    ? "text-[#BF124D] font-bold"
-                                                    : "text-gray-500 hover:text-[#67B2D8]"
+                                                    ? "text-[#BF124D] font-bold border-[#BF124D]"
+                                                    : "text-gray-500 hover:text-[#67B2D8] border-gray-200"
                                             }`}
                                         >
                                             <span>{displayCat}</span>
@@ -109,7 +108,7 @@ function Products() {
                                     {category && (
                                         <li
                                             onClick={() => navigate('/products')}
-                                            className="text-[10px] text-[#67B2D8] font-bold mt-6 cursor-pointer hover:text-[#BF124D] uppercase tracking-widest border-t border-gray-50 pt-4"
+                                            className="w-full text-[10px] text-[#67B2D8] font-bold mt-2 md:mt-6 cursor-pointer hover:text-[#BF124D] uppercase tracking-widest md:border-t md:border-gray-50 md:pt-4 text-center md:text-left"
                                         >
                                             × Clear all filters
                                         </li>
@@ -121,7 +120,7 @@ function Products() {
                         {/* Products Content Area */}
                         <section className="md:col-span-3">
                             
-                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-8 gap-4 bg-white p-4 border border-gray-200 rounded-sm shadow-sm">
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-4 bg-white p-4 border border-gray-200 rounded-sm shadow-sm">
                                 <h2 className="text-lg font-bold text-gray-800">
                                     Our <span className="text-[#BF124D]">Collection</span>
                                     {category && <span className="text-gray-400 font-normal ml-2">/ {category}</span>}
@@ -131,24 +130,24 @@ function Products() {
                                 </span>
                             </div>
 
-                            {/* Strict 2-Column Grid */}
-                            <div className="grid grid-cols-2 gap-4 sm:gap-8">
+                            {/* Responsive Grid: 1 column on smallest mobile, 2 columns on tablets+ */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
                                 {products?.length > 0 ? (
                                     products.map((product) => (
-                                        <div key={product?._id} className="w-full">
+                                        <div key={product?._id} className="w-full px-2 sm:px-0">
                                             <Product product={product} />
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="col-span-full py-32 text-center bg-white border border-dashed border-gray-300 rounded-sm">
+                                    <div className="col-span-full py-20 md:py-32 text-center bg-white border border-dashed border-gray-300 rounded-sm mx-2">
                                         <p className="text-gray-400 font-medium italic">No pieces found matching your criteria.</p>
                                     </div>
                                 )}
                             </div>
 
                             {/* Styled Pagination Section */}
-                            <div className="mt-16 flex justify-center border-t border-gray-200 pt-10">
-                                <div className="pagination-wrapper">
+                            <div className="mt-12 md:mt-16 flex justify-center border-t border-gray-200 pt-10 pb-10">
+                                <div className="pagination-wrapper overflow-x-auto">
                                     <Pagination
                                         currentPage={currentPage}
                                         onPageChange={handlePageChange}
@@ -162,37 +161,46 @@ function Products() {
 
             <Footer />
 
-                <style jsx="true">{`
-            /* 1. THE INACTIVE NUMBERS (The ones you couldn't see) */
-            .pagination-wrapper :global(.page-link),
-            .pagination-wrapper :global(button) {
-                color: #76153C !important;          /* Dark Maroon Text */
-                background-color: #f3f3f3 !important; /* Light Gray Background (not white!) */
-                border: 1px solid #d1d1d1 !important;
-                font-weight: 600;
-            }
+            <style jsx="true">{`
+                /* 1. THE INACTIVE NUMBERS - Changed to Black as requested */
+                .pagination-wrapper :global(.page-link),
+                .pagination-wrapper :global(button) {
+                    color: black !important;         /* Pure Black Text */
+                    background-color: #BF124D  !important; 
+                    border: 1px solid #e2e8f0 !important;
+                    font-weight: 600;
+                    padding: 8px 14px;
+                }
 
-            /* 2. THE ACTIVE NUMBER (Current Page) */
-            .pagination-wrapper :global(.active),
-            .pagination-wrapper :global(.page-item.active .page-link),
-            .pagination-wrapper :global(.page-item.active button) {
-                background-color: #BF124D !important; /* Bright Crimson Background */
-                color: #ffffff !important;            /* Pure White Text */
-                border-color: #76153C !important;
-            }
+                /* 2. THE ACTIVE NUMBER (Current Page) */
+                .pagination-wrapper :global(.active),
+                .pagination-wrapper :global(.page-item.active .page-link),
+                .pagination-wrapper :global(.page-item.active button) {
+                    background-color: #BF124D !important; /* Crimson */
+                    color: #000000  !important;            /* White text */
+                    border-color: #BF124D !important;
+                }
 
-            /* 3. THE HOVER STATE */
-            .pagination-wrapper :global(.page-link:hover),
-            .pagination-wrapper :global(button:hover) {
-                color: #67B2D8 !important;            /* Sky Blue Text */
-                background-color: #ffffff !important; /* White background only on hover */
-                border-color: #67B2D8 !important;
-            }
+                /* 3. THE HOVER STATE */
+                .pagination-wrapper :global(.page-link:hover),
+                .pagination-wrapper :global(button:hover) {
+                    color: #67B2D8 !important;            /* Sky Blue */
+                    background-color: #f8fafc !important;
+                    border-color: #67B2D8 !important;
+                }
 
-            .pagination-wrapper :global(.page-item) {
-                margin: 0 4px;
-            }
-        `}</style>
+                .pagination-wrapper :global(.page-item) {
+                    margin: 0 2px;
+                }
+                
+                /* Responsive pagination container */
+                .pagination-wrapper :global(.pagination) {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 5px;
+                }
+            `}</style>
             
         </div>
     )

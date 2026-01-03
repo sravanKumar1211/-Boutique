@@ -33,19 +33,25 @@ function Register() {
     }
   }
 
-  const registerSubmit = (e) => {
-    e.preventDefault()
-    if (!name || !email || !password) {
-      toast.error('Please fill the form')
-      return
-    }
-    const myForm = new FormData()
-    myForm.set('name', name)
-    myForm.set('email', email)
-    myForm.set('password', password)
-    myForm.set('avatar', avatar)
-    dispatch(register(myForm))
+
+const registerSubmit = (e) => {
+  e.preventDefault();
+
+  if (!name || !email || !password) {
+    toast.error('Please fill in name, email, and password');
+    return;
   }
+
+  const myData = {
+    name,
+    email,
+    password,
+    // If avatar is the default preview string, send an empty string instead
+    avatar: (avatar && avatar.startsWith("data:image")) ? avatar : ""
+  };
+
+  dispatch(register(myData));
+};
 
   useEffect(() => {
     if (error) {

@@ -2,10 +2,10 @@ import React from 'react'
 import {
   Phone,
   Mail,
-  Facebook,
-  Instagram,
-  YouTube,
   LocationOn,
+  GitHub,
+  LinkedIn,
+  Code // Using Code icon for LeetCode
 } from '@mui/icons-material'
 
 function Footer() {
@@ -21,10 +21,10 @@ function Footer() {
               Contact Us
             </h3>
             <p className="flex items-center gap-2 text-sm hover:text-[#67B2D8] transition">
-              <Phone fontSize="small" /> +91 9876543210
+              <Phone fontSize="small" /> +91 7032376748
             </p>
             <p className="flex items-center gap-2 text-sm hover:text-[#67B2D8] transition">
-              <Mail fontSize="small" /> sravan@gmail.com
+              <Mail fontSize="small" /> sravankumargaddamedhi@gmail.com
             </p>
           </div>
 
@@ -34,14 +34,29 @@ function Footer() {
               Follow Me
             </h3>
             <div className="flex gap-4">
-              <a className="text-gray-300 hover:text-[#67B2D8] transition">
-                <Facebook />
+              <a 
+                href="https://github.com/sravanKumar1211" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-[#67B2D8] transition"
+              >
+                <GitHub />
               </a>
-              <a className="text-gray-300 hover:text-[#67B2D8] transition">
-                <Instagram />
+              <a 
+                href="https://leetcode.com/u/sravan12111999/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-[#67B2D8] transition"
+              >
+                <Code /> {/* Representing LeetCode */}
               </a>
-              <a className="text-gray-300 hover:text-[#67B2D8] transition">
-                <YouTube />
+              <a 
+                href="https://linkedin.com/in/sravan-kumar-gaddamedhi-89976019a" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-gray-300 hover:text-[#67B2D8] transition"
+              >
+                <LinkedIn />
               </a>
             </div>
           </div>

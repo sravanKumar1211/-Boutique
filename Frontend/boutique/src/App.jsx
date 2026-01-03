@@ -30,6 +30,8 @@ import CreateProduct from './Admin/CreateProduct.jsx';
 import UpdateProduct from './Admin/UpdateProduct.jsx';
 import UsersList from './Admin/UsersList.jsx';
 import UpdateRole from './Admin/UpdateRole.jsx';
+import About from './pages/About.jsx';
+import Contact from './pages/Contact.jsx';
 
 function App() {
     const dispatch = useDispatch();
@@ -54,6 +56,8 @@ useEffect(() => {
                 <Route path='/password/forgot' element={<ForgotPassword />} />
                 <Route path='/password/reset/:token' element={<ResetPassword />} />
                 <Route path='/cart' element={<Cart />} />
+                <Route path='/about' element={<About></About>} />
+                <Route path='/contact' element={<Contact></Contact>} />
 
                 {/* --- Logged In User Routes --- */}
                 <Route path='/profile' element={<ProtectedRoute element={<Profile />} />} />
